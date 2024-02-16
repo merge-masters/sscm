@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scm.dao.WarehouseInfoDao">
+
+
+	<!-- 창고조회 -->
+	<select id="listWarehouse" resultType="kr.happyjob.study.scm.model.WarehouseInfoModel">
+		SELECT
+			warehouse_name,
+			warehouse_code,
+			manager_name,
+			manager_email,
+			manager_phone,
+			warehouse_address
+		FROM
+			warehouse
+	</select>
+	
+	
+	<!-- 창고상세조회 -->
+	<select id="detailWarehouse" resultType="kr.happyjob.study.scm.model.WarehouseInfoModel">
+		SELECT
+			warehouse_name,
+			warehouse_code,
+			manager_name,
+			manager_email,
+			manager_phone,
+			warehouse_post_code,
+			warehouse_address,
+			warehouse_address_detail
+		FROM
+			warehouse
+		WHERE 
+		    warehouse_code = #{warehouse_code}
+	</select>
+
+
+    <!-- 창고검색 -->
+	<select id="searchWarehouse" parameterType="hashMap" resultType="kr.happyjob.study.scm.model.WarehouseInfoModel">
+	    SELECT
+	        warehouse_name,
+	        warehouse_code,
+	        manager_name,
+	        manager_email,
+	        manager_phone,
+	        warehouse_address
+	    FROM
+	        warehouse
+	    <where>
+	    	<if test="(sname != null) and (!sname.equals(''))">
+				<choose>
+					<when
+						test="searchKey eq 'warehouse_name'.toString()">
+						AND warehouse_name Like CONCAT('%', #{sname}, '%')
+					</when>
+					<when
+						test="searchKey eq 'warehouse_address'.toString()">
+						AND warehouse_address LIKE CONCAT('%', #{sname}, '%')
+					</when>
+				</choose>
+			</if>
+		</where>
+</select>
+	  
+
+    <!-- 창고등록 -->
+	<insert id="insertWarehouse">
+		INSERT INTO warehouse (       warehouse_inout
+		                            , product_code
+									, warehouse_code
+									, warehouse_name
+									, manager_name
+									, manager_email
+									, manager_phone
+									, warehouse_post_code
+									, warehouse_address
+									, warehouse_address_detail
+
+						) VALUES (
+                                      #{warehouse_inout}
+                                    , #{product_code}
+								    , #{warehouse_code}
+									, #{warehouse_name}
+									, #{manager_name}
+									, #{manager_email}
+									, #{manager_phone}
+									, #{warehouse_post_code}
+									, #{warehouse_address}
+									, #{warehouse_address_detail}
+								)
+	</insert>
+	
+
+	<!-- 창고수정 -->
+	<update id="updateWarehouse">
+		UPDATE
+		    warehouse
+		SET 
+		    warehouse_name = #{warehouse_name},
+			manager_name= #{manager_name},
+			manager_email= #{manager_email},
+			manager_phone= #{manager_phone},
+			warehouse_address = #{warehouse_address}
+		WHERE
+		    warehouse_code = #{warehouse_code}
+	</update>
+	
+
+	<!-- 창고삭제 -->
+	<delete id="deleteWarehouse">
+		DELETE FROM warehouse
+		WHERE warehouse_code = #{warehouse_code}
+	</delete>
+
+
+</mapper>

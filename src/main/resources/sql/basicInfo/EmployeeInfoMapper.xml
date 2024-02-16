@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.happyjob.study.basicinfo.dao.EmployeeInfoDao">
+	
+	<!-- 직원 정보 리스트 불러오기 -->
+	<select id="employeeList" parameterType="hashMap" resultType="kr.happyjob.study.basicinfo.dto.EmployeeDto">
+	/*kr.happyjob.study.basicinfo.dao.EmployeeInfoDao.EmployeeList*/
+		
+		SELECT
+			u.user_id AS employee_id,
+			u.user_type AS employee_type,
+			t.type_name AS type_name,
+			u.user_name AS employee_name,
+			u.phone_number
+		FROM
+			user AS u
+		INNER JOIN user_type_code AS t
+		ON u.user_type = t.type_code
+		<where>
+		user_type != "J"
+			<if test="(employeeInput != null) and (!employeeInput.equals(''))">
+				<choose>
+					<when test="searchEmployeeType eq 'employee_id'.toString()">
+						and user_id = #{employeeInput}
+					</when>
+					<when test="searchEmployeeType eq 'employee_name'.toString()">
+						and user_name LIKE CONCAT('%', #{employeeInput}, '%')
+					</when>
+					<otherwise>
+						and (
+							user_id = #{employeeInput}
+							or user_name LIKE CONCAT('%', #{employeeInput}, '%')
+						)
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+		ORDER BY create_date DESC
+		LIMIT #{pageIndex}, #{pageSize};
+
+		</select>
+		
+		<select id="employeeCount" parameterType="hashMap" resultType="int">
+		/*kr.happyjob.study.basicinfo.dao.EmployeeInfoDao.employeeCount*/
+	
+			SELECT
+				count(*)
+			FROM
+				user;
+				
+		</select>
+		
+		<select id="selectEmployeeDetail" parameterType="hashMap" resultType="kr.happyjob.study.basicinfo.dto.EmployeeDto">
+		/*kr.happyjob.study.basicinfo.dao.EmployeeInfoDao.selectEmployeeDetail*/
+		
+			SELECT
+				user_id AS employee_id,
+				user_type AS employee_type,
+				user_name AS employee_name,
+				phone_number,
+				email,
+				post_code,
+				user_address,
+				user_address_detail
+			FROM
+				user
+			WHERE
+				user_id = #{employee_id} AND user_name = #{employee_name};
+		
+		</select>
+		
+		<update id="updateEmployeeInfo" parameterType="hashMap">
+		/*kr.happyjob.study.basicinfo.dao.EmployeeInfoDao.updateEmployeeInfo*/
+			
+			UPDATE user
+			SET
+				user_type = #{employee_type},
+				user_name = #{employee_name},
+				phone_number = #{phoneNumber},
+				email = #{email},
+				post_code = #{zipCode},
+				user_address = #{address},
+				user_address_detail = #{addressDetail}
+			WHERE
+				user_id = #{employee_id}
+		
+		</update>
+		
+		<delete id="deleteEmployeeInfo" parameterType="hashMap">
+		/*kr.happyjob.study.basicinfo.dao.EmployeeInfoDao.deleteEmployeeInfo*/
+	
+			DELETE 
+				FROM user
+			WHERE
+				user_id = #{employeeId} AND user_name = #{employeeName};
+
+	</delete>
+		
+</mapper>
