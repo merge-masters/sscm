@@ -43,13 +43,27 @@
             <p class="Location">
               <a href="#" class="btn_set home">메인으로</a> <span
                 class="btn_nav bold">기준 정보</span> <span class="btn_nav bold">공급처 관리
-                </span> <a href="../scm/supplierInfo.do" class="btn_set refresh">새로고침</a>
+                </span> <a href="../scm/supplyInfo.do" class="btn_set refresh">새로고침</a>
             </p>
 
             <p class="conTitle">
               <span>납품 업체</span> <span class="fr"> 
               </span>
             </p>
+            
+			<table width="100%" cellpadding="5" cellspacing="0" border="1" align="left" style="margin: 10px 0px 15px 0px;  border-collapse: collapse;">
+				<tr style="border: 0px; border-color: blue">
+					<td width="80" height="25" style="font-size: 120%;">&nbsp;&nbsp;</td>
+					<td width="50" height="25" style="font-size: 100%; text-align:left; padding-right:25px;">
+						<select id="searchKey" name="searchKey" style="width: 150px;" v-model="searchKey">
+							<option value="" >납품업체명</option>
+							<option value="" >제품명</option>
+						</select>
+						<input type="text" style="width: 300px; height: 25px;" id="sname" name="sname">                    
+						<a href="" class="btnType blue" id="btnSearchSupplier" name="btn"><span>검  색</span></a>
+					</td>
+				</tr>
+			</table> 
             
             <div class="div">
               <table class="col">
@@ -77,23 +91,7 @@
   
             <div class="paging_area" id="Pagination"> </div>
             
-            <table style="margin-top: 10px" width="100%" cellpadding="5" cellspacing="0" border="1"
-                        align="left"
-                        style="collapse; border: 1px #50bcdf;">
-                        <tr style="border: 0px; border-color: blue">
-                           <td width="80" height="25" style="font-size: 120%;">&nbsp;&nbsp;</td>
-                           <td width="50" height="25" style="font-size: 100%; text-align:left; padding-right:25px;">
-                            <select id="searchKey" name="searchKey" style="width: 150px;" v-model="searchKey">
-                  <option value="" >납품업체명</option>
-                  <option value="" >제품명</option>
-              </select> 
-              
-                             <input type="text" style="width: 300px; height: 25px;" id="sname" name="sname">                    
-                             <a href="" class="btnType blue" id="btnSearchSupplier" name="btn"><span>검  색</span></a>
-                           </td> 
-                           
-                        </tr>
-                     </table> 
+
                      
             <p class="conTitle mt50">
               <span>상세 정보</span> <span class="fr"> 
