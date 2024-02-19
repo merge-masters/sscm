@@ -4,8 +4,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/scm")
-public class SupplierInfoController {
 @RequestMapping("/scm/")
 public class SupplyInfoController {
 	
