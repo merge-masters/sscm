@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" 
-       xmlns:context="http://www.springframework.org/schema/context" 
-       xmlns:mvc="http://www.springframework.org/schema/mvc" 
-       xmlns:aop="http://www.springframework.org/schema/aop" 
-       xmlns:tx="http://www.springframework.org/schema/tx" 
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-       xmlns:websocket="http://www.springframework.org/schema/websocket"
-       xsi:schemaLocation="
-           http://www.springframework.org/schema/websocket 
-           http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
-           http://www.springframework.org/schema/mvc 
-           http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
-           http://www.springframework.org/schema/beans 
-           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-           http://www.springframework.org/schema/context 
-           http://www.springframework.org/schema/context/spring-context-4.3.xsd
-           http://www.springframework.org/schema/aop 
-           http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
-           http://www.springframework.org/schema/tx 
-           http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
-
+	   xmlns:context="http://www.springframework.org/schema/context" 
+	   xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	   xmlns:aop="http://www.springframework.org/schema/aop" 
+	   xmlns:tx="http://www.springframework.org/schema/tx" 
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	   xmlns:websocket="http://www.springframework.org/schema/websocket"
+	   xsi:schemaLocation="http://www.springframework.org/schema/websocket 
+	    http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+>
 		<!-- # @Controller 어노테이션을 이용한 컨트롤러를 사용하기 위한 설정 -->
 		<mvc:annotation-driven />
 		
@@ -116,8 +110,6 @@
 						<mvc:exclude-mapping path="/loginProc.do" />
 						<mvc:exclude-mapping path="/selectFindInfo.do" />
 						<mvc:exclude-mapping path="/register.do" />
-						<mvc:exclude-mapping path="/registerUser" />						
-						<mvc:exclude-mapping path="/loginUser" />						
 						<mvc:exclude-mapping path="/updateFindPw.do" />
 						<mvc:exclude-mapping path="/system/selectUsrMgr.do" />
 						<mvc:exclude-mapping path="/adm/selectPrjMgr.do" />

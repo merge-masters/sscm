@@ -1,4 +1,4 @@
-
+<<<<<<< HEAD
 .hidden {
 	display: none;
 }
@@ -376,7 +376,7 @@
 }
 .lecturer_box .lecturer_listbox button {
 	padding : 0.3em 1em;
-	margin : -0.2em 0;
+	margin : -0.2em 0;'
 	border-radius: 0.3em;
 	background : #FFB6C1;
 	color : #FFFFFF;
@@ -1502,6 +1502,7 @@ input[type=search] {
 }
 .btn-wrap > button:nth-child(2) {
  margin-left: 10px;
+=======
 .hidden {
 	display: none;
 }
@@ -1879,7 +1880,7 @@ input[type=search] {
 }
 .lecturer_box .lecturer_listbox button {
 	padding : 0.3em 1em;
-	margin : -0.2em 0;
+	margin : -0.2em 0;'
 	border-radius: 0.3em;
 	background : #FFB6C1;
 	color : #FFFFFF;
@@ -3005,5 +3006,5 @@ input[type=search] {
 }
 .btn-wrap > button:nth-child(2) {
  margin-left: 10px;
-}
+>>>>>>> 54425c82f8499940081a3ca612f917af0a245678
 }
