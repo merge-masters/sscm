@@ -10,7 +10,6 @@
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 <!-- sweet alert import -->
 <script src='${CTX_PATH}/js/sweetalert/sweetalert.min.js'></script>
-<jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 <!-- sweet swal import -->
 
 <script type="text/javascript">
@@ -76,9 +75,7 @@
               </table>
             </div>
   
-            <div class="paging_area"  id="Pagination"> </div>
-            
-            
+            <div class="paging_area" id="Pagination"> </div>
             
             <table style="margin-top: 10px" width="100%" cellpadding="5" cellspacing="0" border="1"
                         align="left"

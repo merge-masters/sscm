@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/scm")
 public class SupplierInfoController {
+@RequestMapping("/scm/")
+public class SupplyInfoController {
 	
 	@RequestMapping("/supplyInfo.do")
 	public String startSupplierInfo(){
-		return "/scm/supplierInfo";
+		return "/scm/supplyInfo";
 	}
 }
