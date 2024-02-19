@@ -28,7 +28,32 @@ src="${CTX_PATH}/js/popFindZipCode.js"></script>
 <!-- seet swal import -->
 
 <script type="text/javascript">
-
+	
+	/* StockInfo 페이지  */
+	var stockInfoPageSize = 5;
+	var stockInfoBlockPageSize = 5;
+	
+	/* 창고별 재고현황 데이터 */
+	var stockInfo;
+	
+	/* onload 이벤트 */
+	$(document).ready(function() {
+		
+		init();
+		
+	});
+	
+	function init() {
+		stockInfo = new Vue({
+			el:'#stockInfoList',
+			data : {
+				stockInfo: [
+				            	{"창고코드": "1", "제품번호":"ERD000", "창고명":"동쪽창고","제품명":"갤럭시","재고수량":123, "창고위치":"서울특별시 이곳저곳"}
+				            ]
+			}
+		})
+	}
+	
 </script>
 
 	<style>
@@ -79,21 +104,15 @@ src="${CTX_PATH}/js/popFindZipCode.js"></script>
 											<select style="width: 90px; height: 34px;" id="option"
 												name="search_value">
 												<option selected>전체</option>
-												<option value="company_name" id="title">회사명</option>
-												<option value="manager_name" id="content">담당자명</option>
+												<option value="warehouse_name" id="title">창고명</option>
+												<option value="product_name" id="content">제품명</option>
 											</select>
 											<!-- // searchbar -->
-											<input type="text" class="form-control" aria-label="..."
-												id="keyword" autocomplete="off">
+											 <input style="width: 300px; height: 25px;" id="sname" name="sname" type="text">
 										</div>
 									</div>
 
-									<!-- button -->
-									<div class="btn-group" role="group" aria-label="...">
-										<button type="button" class="btn btn-default"
-											id="customerSearch_button" name="btn">검색</button>
-									</div>
-									<!-- // button -->
+									<button type="submit" style="width: 50px; height: 28px;" onClick="searchWarehouse">검색</button>
 
 									<div class="divCustomerList">
 										<!-- divComGrpCodList -->
@@ -118,7 +137,7 @@ src="${CTX_PATH}/js/popFindZipCode.js"></script>
 													<th scope="col">창고위치</th>
 												</tr>
 											</thead>
-											<tbody id="customerList">
+											<tbody id="stockInfoList">
 											</tbody>
 											<!-- listComnGrpCode -->
 										</table>
