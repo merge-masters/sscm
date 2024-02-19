@@ -28,7 +28,41 @@ src="${CTX_PATH}/js/popFindZipCode.js"></script>
 <!-- seet swal import -->
 
 <script type="text/javascript">
-
+	
+	/* StockInfo 페이지  */
+	var stockInfoPageSize = 5;
+	var stockInfoBlockPageSize = 5;
+	
+	/* 창고별 재고현황 데이터 */
+	var stockInfo;
+	
+	/* onload 이벤트 */
+	$(document).ready(function() {
+		
+		init();
+		
+	});
+	
+	function init() {
+		stockInfo = new Vue({
+			el:'#stockInfoList',
+			data : {
+				stockInfo: [
+				            	{"창고코드": "1", "제품번호":"ERD000", "창고명":"동쪽창고","제품명":"갤럭시","재고수량":123, "창고위치":"서울특별시 이곳저곳"},
+				            	{"창고코드": "2", "제품번호":"ERD001", "창고명":"서쪽창고","제품명":"애플","재고수량":1234, "창고위치":"서울특별시 여기저기"},
+				            	{"창고코드": "3", "제품번호":"ERD002", "창고명":"남쪽창고","제품명":"노키아","재고수량":55, "창고위치":"서울특별시 성수동"},
+				            	{"창고코드": "4", "제품번호":"ERD003", "창고명":"북쪽창고","제품명":"마이크로소프트","재고수량":34, "창고위치":"서울특별시 방배동"},
+				            	{"창고코드": "5", "제품번호":"ERD004", "창고명":"동쪽창고","제품명":"아이리버","재고수량":35, "창고위치":"서울특별시 가산동"},
+				            	{"창고코드": "6", "제품번호":"ERD005", "창고명":"서쪽창고","제품명":"아마존","재고수량":79, "창고위치":"서울특별시 신림동"},
+				            	{"창고코드": "7", "제품번호":"ERD006", "창고명":"남쪽창고","제품명":"페이스북","재고수량":695, "창고위치":"서울특별시 타임스퀘어"},
+				            	{"창고코드": "8", "제품번호":"ERD007", "창고명":"북쪽창고","제품명":"LG","재고수량":63, "창고위치":"서울특별시 롯데타워"},
+				            	{"창고코드": "9", "제품번호":"ERD008", "창고명":"중앙창고","제품명":"스카이","재고수량":73, "창고위치":"서울특별시 영등포"},
+				            	{"창고코드": "10", "제품번호":"ERD009", "창고명":"위쪽아래쪽창고","제품명":"파나소닉","재고수량":623, "창고위치":"서울특별시 판교"}
+				            ]
+			}
+		})
+	}
+	
 </script>
 
 	<style>
@@ -79,21 +113,15 @@ src="${CTX_PATH}/js/popFindZipCode.js"></script>
 											<select style="width: 90px; height: 34px;" id="option"
 												name="search_value">
 												<option selected>전체</option>
-												<option value="company_name" id="title">회사명</option>
-												<option value="manager_name" id="content">담당자명</option>
+												<option value="warehouse_name" id="title">창고명</option>
+												<option value="product_name" id="content">제품명</option>
 											</select>
 											<!-- // searchbar -->
-											<input type="text" class="form-control" aria-label="..."
-												id="keyword" autocomplete="off">
+											 <input style="width: 300px; height: 25px;" id="sname" name="sname" type="text">
 										</div>
 									</div>
 
-									<!-- button -->
-									<div class="btn-group" role="group" aria-label="...">
-										<button type="button" class="btn btn-default"
-											id="customerSearch_button" name="btn">검색</button>
-									</div>
-									<!-- // button -->
+									<button type="submit" style="width: 50px; height: 28px;" onClick="searchWarehouse">검색</button>
 
 									<div class="divCustomerList">
 										<!-- divComGrpCodList -->
@@ -118,7 +146,7 @@ src="${CTX_PATH}/js/popFindZipCode.js"></script>
 													<th scope="col">창고위치</th>
 												</tr>
 											</thead>
-											<tbody id="customerList">
+											<tbody id="stockInfoList">
 											</tbody>
 											<!-- listComnGrpCode -->
 										</table>
