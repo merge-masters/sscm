@@ -51,13 +51,13 @@
 		<context:property-placeholder location="/WEB-INF/classes/happyjob.properties" />
 		
 		<!-- ## MySQL setup ## -->
-		<bean id="mysqlDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-				<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-				<property name="url" value="jdbc:mysql://13.125.198.29:3306/erpscm?allowMultiQueries=true" />
-				<property name="username" value="root" />
-				<property name="password" value="hwangkh704!" />
-				<property name="validationQuery" value="select 1" />
-		</bean>
+      <bean id="mysqlDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+            <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+            <property name="url" value="jdbc:mysql://13.125.198.29:3306/erpscm?allowMultiQueries=true" />
+            <property name="username" value="root" />
+            <property name="password" value="hwangkh704!" />
+            <property name="validationQuery" value="select 1" />
+      </bean>
 		
 		<!-- ## Mapper setup ## -->
 		<bean id="mysqlSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
