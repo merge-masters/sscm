@@ -13,6 +13,7 @@
 	integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
 	crossorigin="anonymous">
 </script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 <!-- 우편번호 조회 -->
 <script
@@ -35,6 +36,7 @@ src="${CTX_PATH}/js/popFindZipCode.js"></script>
 	
 	/* 창고별 재고현황 데이터 */
 	var stockInfo;
+	var stockInfoModalVue;
 	
 	/* onload 이벤트 */
 	$(document).ready(function() {
@@ -47,7 +49,7 @@ src="${CTX_PATH}/js/popFindZipCode.js"></script>
 		stockInfo = new Vue({
 			el:'#stockInfoList',
 			data : {
-				stockInfo: [
+				stockInfoData: [
 				            	{"창고코드": "1", "제품번호":"ERD000", "창고명":"동쪽창고","제품명":"갤럭시","재고수량":123, "창고위치":"서울특별시 이곳저곳"},
 				            	{"창고코드": "2", "제품번호":"ERD001", "창고명":"서쪽창고","제품명":"애플","재고수량":1234, "창고위치":"서울특별시 여기저기"},
 				            	{"창고코드": "3", "제품번호":"ERD002", "창고명":"남쪽창고","제품명":"노키아","재고수량":55, "창고위치":"서울특별시 성수동"},
@@ -59,8 +61,44 @@ src="${CTX_PATH}/js/popFindZipCode.js"></script>
 				            	{"창고코드": "9", "제품번호":"ERD008", "창고명":"중앙창고","제품명":"스카이","재고수량":73, "창고위치":"서울특별시 영등포"},
 				            	{"창고코드": "10", "제품번호":"ERD009", "창고명":"위쪽아래쪽창고","제품명":"파나소닉","재고수량":623, "창고위치":"서울특별시 판교"}
 				            ]
+			},
+			methods: {
+				detailView: function(code) {
+					alert(code);
+					console.log(this.stockInfoData[code]);
+					fDetailResult(this.stockInfoData[code]);
+				}
+			}
+		});
+		
+		stockInfoModalVue = new Vue({
+			el:'#stockInfoModalBody',
+			data : {
+				productNumber : "",
+				productName: "",
+				stockQuantity: "",
+				shipmentQuantity: ""
 			}
 		})
+	}
+	
+	/* Stock Info 상세 조회 */
+	function fDetailResult(data) {
+		gfModalPop("#layer2");
+		fModalContent(data);
+	}
+	
+	/* 팝업_내용 뿌리기 */
+	function fModalContent(data) {
+		stockInfoModalVue.productNumber = data.제품번호
+		stockInfoModalVue.productName = data.제품명
+		stockInfoModalVue.stockQuantity = data.재고수량
+		stockInfoModalVue.shipmentQuantity = 0
+	}
+	
+	/* 검색 기능 */
+	function stockInfoSearch() {
+		
 	}
 	
 </script>
@@ -117,7 +155,7 @@ src="${CTX_PATH}/js/popFindZipCode.js"></script>
 												<option value="product_name" id="content">제품명</option>
 											</select>
 											<!-- // searchbar -->
-											 <input style="width: 300px; height: 25px;" id="sname" name="sname" type="text">
+											 <input style="width: 300px; height: 25px;" id="sname" name="inputValue" type="text">
 										</div>
 									</div>
 
@@ -146,7 +184,16 @@ src="${CTX_PATH}/js/popFindZipCode.js"></script>
 													<th scope="col">창고위치</th>
 												</tr>
 											</thead>
-											<tbody id="stockInfoList">
+											<tbody id="stockInfoList"  v-if="stockInfoData.length">
+												<tr v-for="(item, index) in stockInfoData" @click="detailView(index)">
+													<td>{{item.창고코드}}</td>
+													<td>{{item.제품번호}}</td>
+													<td>{{item.창고명}}</td>
+													<td>{{item.제품명}}</td>			
+													<td>{{item.재고수량}}</td>
+													<td>{{item.창고위치}}</td>
+												</tr>
+											</tbody>
 											</tbody>
 											<!-- listComnGrpCode -->
 										</table>
@@ -183,68 +230,28 @@ src="${CTX_PATH}/js/popFindZipCode.js"></script>
 								<col width="*">
 							</colgroup>
 
-							<tbody>
+							<tbody id="stockInfoModalBody">
 								<tr>
-									<th scope="row">구분</th>
+									<th scope="row">제품번호 </th>
 									<td><input type="text" class="inputTxt p100"
-										id="customer_userType" name="customer_userType"/></td>
-										
-									<th scope="row">고객 아이디 </th>
-									<td><input type="text" class="inputTxt p100"
-										id="customer_userId" name="customer_userId" readonly/></td>
-										
-									
+										id="productNumber" name="productNumber" v-model="productNumber" readonly/></td>
 								</tr>
 								<tr>
-									<th scope="row">담당자명 </th>
-									<td><input type="text" class="inputTxt p100" id="customer_name"
-										name="customer_name"/></td>
-									<th scope="row">회사명 </th>
+									<th scope="row">제품명 </th>
 									<td><input type="text" class="inputTxt p100"
-										id="customer_companyName" name="customer_companyName" readonly/></td>
-									
+										id="productName" name="productName" v-model="productName" readonly/></td>	
+								</tr>	
+								<tr>
+									<th scope="row">재고수량 </th>
+									<td><input type="text" class="inputTxt p100"
+										id="stockQuantity" name="stockQuantity" v-model="stockQuantity"/></td>
 								</tr>
 								
 								<tr>
-									<th scope="row">연락처 </th>
+									<th scope="row">출고량 </th>
 									<td><input type="text" class="inputTxt p100"
-										id="customer_phoneNumber" name="customer_phoneNumber"/></td>
+										id="shipmentQuantity" name="shipmentQuantity" v-model="shipmentQuantity"/></td>
 								</tr>
-								
-								<tr>
-									<th scope="row">이메일 </th>
-									<td><input type="text" class="inputTxt p100"
-										id="customer_email" name="customer_email"/></td>
-								</tr>
-
-								<tr>
-									<th scope="row">우편번호</th>
-									<td colspan="2"><input type="text" class="inputTxt p100"
-									name="zip_code" id="zip_code" /></td>
-									<td><input type="button" value="우편번호 찾기"
-									onclick="execDaumPostcode()" style="width: 130px; height: 20px" />
-									</td>
-								</tr>
-								<tr>
-									<th scope="row">주소</th>
-									<td colspan="3"><input type="text" class="inputTxt p100"
-									name="addr" id="addr" /></td>
-								</tr>
-								<tr>
-									<th scope="row">상세주소</th>
-									<td colspan="3"><input type="text" class="inputTxt p100"
-									name="addr_detail" id="addr_detail" /></td>
-								</tr>
-								<!-- 
-								<tr>
-									<th scope="row">사용 유무 </th>
-									<td colspan="3"><input type="radio" id="dtl_use_poa"
-										name="dtl_use_poa" value="Y" v-model="dtl_use_poa" /> <label
-										for="radio1-1">사용</label> &nbsp;&nbsp;&nbsp;&nbsp; <input
-										type="radio" id="dtl_use_poa" name="dtl_use_poa" value="N"
-										v-model="dtl_use_poa" /> <label for="radio1-2">미사용</label></td>
-								</tr>
-								 -->
 							</tbody>
 						</table>
 
