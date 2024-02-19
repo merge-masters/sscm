@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <c:if test="${totalCount eq 0}">
   <tr>
@@ -12,10 +11,10 @@
   <c:set var="nRow" value="${pageSize*(currentPage - 1)}" />
   <c:forEach items="${noticeList}" var="notice">
     <tr>
-      <td>${notice.no}</td>
-      <td><a href="javascript:fadeInModal('r','${notice.no}')">${notice.title}</a></td>
-      <td><fmt:formatDate pattern="yyyy-MM-dd" value="${notice.write_date}"/></td>
-<%--       <td>${notice.view_cnt}</td> --%>
+      <td>${notice.notice_id}</td>
+      <td><a href="javascript:fadeInModal('r','${notice.notice_id}')">${notice.title}</a></td>
+      <td>${notice.date}</td>
+      <td>${notice.view_cnt}</td>
       <!-- List에 있는 js 함수 호출가능 이거 그대로 가지고 가기 때문에 !!  -->
     </tr>
     <c:set var="nRow" value="${nRow + 1}" />

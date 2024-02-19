@@ -11,7 +11,6 @@
   // 페이징 설정
   var pageSize = 5;
   var pageBlock = 5;
-  var currentPage = 1;
   
   /* OnLoad event */
   $(function() {
@@ -159,7 +158,7 @@
     
     var validateFormerDate = $("#datetimepicker1").find('input').val();
     var validateLatterDate = $("#datetimepicker3").find('input').val();
-//     var currentPage = 1;
+    var currentPage = 1;
     var delimiter = '-';
     var today = new Date();
 
@@ -252,22 +251,20 @@
     }
     // 콜백
     var resultCallback = function(result) {
-    	console.log('notice connect test');
-    	console.log(result);
-      	selectListCallBack(result, currentPage);
+      selectListCallBack(result, currentPage);
     };
-    noticeAjax("/system/notice.do", "post", "text", true, param, resultCallback);
+    callAjax("/system/notice.do", "post", "text", true, param, resultCallback);
   }
 
   /* 공지사항 목록 조회 콜백 함수 */
   function selectListCallBack(result, currentPage) {
 
-	console.log("콜백함수 실행 성공")
-	console.log(result);
-	  
     // 기존 목록 삭제
-    $('#noticeList').empty().append(result);
-    
+    $('#noticeList').empty();
+
+    // 신규 목록 생성
+    $("#noticeList").append(result);
+
     // 리스트 로우의 총 개수 추출
     var totalCount = $("#totalCount").val();
 
@@ -277,9 +274,11 @@
     $("#pagination").empty().append(paginationHtml);
 
     // 현재 페이지 설정
-//     $("#currentPageCod").val(currentPage);
+    $("#currentPageCod").val(currentPage);
   }
   
+
+
   /* 공지사항 글 작성 함수 */
   function writeNotice() {
     // 공지사항 글 작성 null 체크
@@ -351,7 +350,7 @@
       initModal(identifier, result);
 
     }
-    noticeAjax("/system/detailNotice.do", "post", "json", true, param, resultCallback);
+    callAjax("/system/detailNotice.do", "post", "json", true, param, resultCallback);
   }
 
   /* 공지사항 작성 ,공지사항 수정 모달 변경 */
@@ -606,26 +605,6 @@
     }
   }
   
-	/** 기업고객 리스트 Ajax */
-	function noticeAjax(url, method, dataType, async, param, callback) {
-		$.ajax({
-			url : url,
-			type : method,
-			dataType : dataType,
-			async : async,
-			data : param,
-			success : function(data) {
-				callback(data);
-			},
-			error : function(xhr, status, err) {
-				console.log("xhr : " + xhr);
-				console.log("status : " + status);
-				console.log("err : " + err);
-				alert("에러발생")
-			}
-		})
-	}
-  
 </script>
 </head>
 <body>
@@ -714,7 +693,7 @@
                       <th scope="col">글번호</th>
                       <th scope="col">제목</th>
                       <th scope="col">작성일</th>
-<!--                       <th scope="col">조회수</th> -->
+                      <th scope="col">조회수</th>
                     </tr>
                   </thead>
                   <tbody id="noticeList"></tbody>
@@ -722,7 +701,7 @@
               </div>
               <div class="paging_area" id="pagination"></div>
               <div class="btn-wrap">
-                <c:if test="${sessionScope.userType eq '0'}">
+                <c:if test="${sessionScope.userType eq 'E'}">
                   <button type="button" class="btn btn-default" id="write_modal_button">글쓰기</button>
                 </c:if>
               </div>
@@ -794,7 +773,7 @@
               </tr>
               <tr>
                 <td colspan="3" style="position:absolute; top:100%; left:35%; border-right:none;border-left:none">
-                  <c:if test="${sessionScope.userType == '0'}">
+                  <c:if test="${sessionScope.userType == 'E'}">
                     <div class="btn-group">
                       <button class="btn-default btn-sm" id="write_button">저장</button>
                       <button class="btn-default btn-sm" id="modify_button">저장</button>

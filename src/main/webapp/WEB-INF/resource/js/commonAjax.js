@@ -11,7 +11,6 @@ $(document).ajaxStop($.unblockUI);
  *   param : data parameter
  *   callback : callback function name
  */
-
 function callAjax(url, method, dataType, async, param, callback) {
 	//console.log('>>>>>>param일떄',param);
 	
@@ -38,7 +37,7 @@ function callAjax(url, method, dataType, async, param, callback) {
       			
 			if (xhr.status == 901) {
 				alert("로그인 정보가 없습니다.\n다시 로그인 해 주시기 바랍니다.");
-				location.replace('/index');
+				location.replace('/login.do');
 			} else {
 				alert('A system error has occurred.' + err);
 			}

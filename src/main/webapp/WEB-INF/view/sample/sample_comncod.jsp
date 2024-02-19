@@ -31,6 +31,9 @@
     	
     	fn_groupsearch();
     	
+    	
+    	
+    	
 	});
 
 	/** 버튼 이벤트 등록 */
@@ -209,6 +212,8 @@
 	}
     
 
+	
+	
 	function fn_groupsearch(currentPage) {
     	
     	currentPage = currentPage || 1;
@@ -227,6 +232,7 @@
     	};
 
     	console.log("currentPage ; " + currentPage);
+    	
 		var resultCallback = function(data) {
 			fn_goruplistdisplay(data, currentPage);
 		}		
