@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.basicinfo.dao.CustomerInfoDao">
+	
+	<!-- 기업 고객 정보 리스트 불러오기 -->
+	<select id="customerList" parameterType="hashMap" resultType="kr.happyjob.study.basicinfo.dto.CustomerDto">
+		/*kr.happyjob.study.basicinfo.dao.CustomerInfoDao.customerList*/
+		
+		SELECT
+			user_id,
+			user_type,
+			company_name,
+			user_name AS manager_name,
+			phone_number
+		FROM
+			user
+		<where>
+			user_type ="J"
+			<if test="(customerInput != null) and (!customerInput.equals(''))">
+				<choose>
+					<when test="searchCustomerType eq 'company_name'.toString()">
+						and company_name LIKE CONCAT('%', #{customerInput}, '%')	
+					</when>
+					<when test="searchCustomerType eq 'manager_name'.toString()">
+						and user_name LIKE CONCAT('%', #{customerInput}, '%')
+					</when>
+					<otherwise>
+						and (
+							company_name LIKE CONCAT('%', #{customerInput}, '%')
+							or user_name LIKE CONCAT('%', #{customerInput}, '%')
+						)
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+		ORDER BY create_date DESC
+		LIMIT #{pageIndex}, #{pageSize};
+	
+	</select>
+	
+	<select id="customerCount" parameterType="hashMap" resultType="int">
+	/*kr.happyjob.study.basicinfo.dao.CustomerInfoDao.customerCount*/
+	
+		SELECT
+			count(*)
+		FROM
+			user
+		WHERE
+			user_type = "J";
+		
+	</select>
+	
+	<select id="selectCustomerDetail" parameterType="hashMap" resultType="kr.happyjob.study.basicinfo.dto.CustomerDto">
+		/*kr.happyjob.study.basicinfo.dao.CustomerInfoDao.selectCustomerDetail*/
+		
+		SELECT 
+			user_id,
+			user_type,
+			company_name,
+			user_name AS manager_name,
+			phone_number,
+			email,
+			post_code,
+			user_address,
+			user_address_detail
+		FROM
+			user
+		where
+			company_name = #{company_name} AND
+			user_name = #{manager_name}
+		
+	</select>
+	
+	<update id="updateCustomerInfo" parameterType="hashMap">
+	/*kr.happyjob.study.basicinfo.dao.CustomerInfoDao.updateCustomerInfo*/
+		
+		UPDATE user
+		SET 
+			user_type = #{userType},
+			company_name = #{companyName},
+			user_name = #{customerName},
+			phone_number = #{phoneNumber},
+			email = #{email},
+			post_code = #{zipCode},
+			user_address = #{address},
+			user_address_detail = #{addressDetail}
+		WHERE
+			user_id = #{userId};
+			
+	</update>
+
+	<delete id="deleteCustomerInfo" parameterType="hashMap">
+	/*kr.happyjob.study.basicinfo.dao.CustomerInfoDao.deleteCustomerInfo*/
+	
+		DELETE 
+			FROM user
+		WHERE
+			company_name = #{companyName} AND user_name = #{customerName};
+
+	</delete>
+	
+</mapper>

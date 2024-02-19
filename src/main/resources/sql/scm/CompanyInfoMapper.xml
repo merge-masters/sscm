@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.scm.dao.CompanyInfoDao">
+
+   
+    <!-- 납품업체조회 -->
+	<select id="companyInfo"  resultType="kr.happyjob.study.scm.model.CompanyInfoModel">
+		SELECT 
+		    company_class_name, 
+		    user_id, 
+		    user_password, 
+		    user_name, 
+		    phone_number
+		FROM 
+		    company c
+		INNER JOIN 
+		    user u
+		ON 
+		    c.company_class_name = u.company_name
+	</select>
+   
+   
+   
+   <!-- 납품업체명검색 -->
+	<select id="searchCompany" parameterType="hashMap" resultType="hashMap">
+		SELECT 
+		    company_class_name, 
+		    user_id, 
+		    user_password, 
+		    user_name, 
+		    phone_number
+		FROM 
+		    company c
+		INNER JOIN 
+		    user u
+		ON 
+		    c.company_class_name = u.company_name
+		<where>
+		    <if test= "searchKey eq 'company_class_name'.toString()">
+		        AND company_class_name LIKE CONCAT('%', #{sname}, '%')
+		    </if>
+		</where>
+	</select>
+	
+	
+	
+	<!-- 납품업체조회디테일 -->
+	<select id="detailCompany"  resultType="kr.happyjob.study.scm.model.CompanyInfoModel">
+	  SELECT 
+		   company_class_name,
+	       product_model_number, 
+	       product_name, 
+	       product_model_price
+       FROM 
+          company c
+       INNER JOIN 
+           product p
+       ON c.company_code = p.company_code
+       WHERE
+       	  company_class_name = #{company_class_name}
+	</select>
+	
+
+
+
+
+</mapper>

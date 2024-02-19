@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.happyjob.study.order.dao.ScmReturnListDao">
+
+
+	<!-- 반품신청목록조회 -->
+	<select id="scmReturnList" resultType="kr.happyjob.study.order.model.ScmReturnListModel">
+		SELECT
+		    p.product_name,
+		    r.return_date,
+		    r.return_count,
+		    p.product_model_price
+		FROM 
+		    scm.return r
+		INNER JOIN 
+		    paper pp ON r.paper_code = pp.paper_code
+		INNER JOIN 
+		    user u ON pp.user_id = u.user_id
+		INNER JOIN 
+		    company c ON u.company_name = c.company_class_name
+		INNER JOIN 
+		    product p ON c.company_code = p.company_code
+		WHERE
+		    pp.paper_category_code = 3;
+	</select>
+	
+	
+	
+</mapper>
