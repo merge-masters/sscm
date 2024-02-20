@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,7 +30,7 @@ public class SupplierInfoController {
   public String initSupplierInfo(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
       HttpServletResponse response, HttpSession Session) throws Exception{
  
-    return "scm/supplierInfo";
+    return "scm/supplierInfoVue";
   }
   
   //공급처 조회
@@ -56,6 +57,38 @@ public class SupplierInfoController {
     model.addAttribute("currentPageSupplier",currentPage);  
     
     return "scm/listSupplier";
+  }
+  
+  //공급처 조회 - 뷰
+  @RequestMapping("listSupplierVue.do")
+  @ResponseBody
+  public Map<String, Object> listSupplierVue(Model model, @RequestBody Map<String, Object> paramMap, HttpServletRequest request,
+      HttpServletResponse response, HttpSession session) throws Exception{
+    
+/*	logger.info("+ Start " + className );
+	logger.info("   - paramMap : " + paramMap);*/
+		
+    int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));  // 현재 페이지 번호
+    int pageSize    = (int) paramMap.get("pageSize");     // 페이지 사이즈
+    int pageIndex   = (currentPage -1)*pageSize;                  // 페이지 시작 row 번호
+    
+    paramMap.put("pageIndex", pageIndex);
+    paramMap.put("pageSize", pageSize);
+    
+    // 공급처 목록 조회
+    List<SupplierInfoModel> listSupplierModel = supplierInfoService.listSupplier(paramMap);
+    
+    // 공급처 목록 카운트 조회
+    int totalCount = supplierInfoService.totalCntSupplier(paramMap);
+    
+    Map<String, Object> resultMap = new HashMap<>();
+    
+    resultMap.put("listSupplierModel", listSupplierModel);
+    resultMap.put("totalCount", totalCount);
+    resultMap.put("pageSize", pageSize);
+    resultMap.put("currentPageSupplier",currentPage);
+    
+    return resultMap;
   }
   
   //제품목록 조회
