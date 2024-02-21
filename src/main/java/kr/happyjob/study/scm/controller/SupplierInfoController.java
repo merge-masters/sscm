@@ -30,7 +30,7 @@ public class SupplierInfoController {
   public String initSupplierInfo(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
       HttpServletResponse response, HttpSession Session) throws Exception{
  
-    return "scm/supplierInfoVue";
+    return "scm/supplierInfo2";
   }
   
   //공급처 조회
@@ -57,6 +57,41 @@ public class SupplierInfoController {
     model.addAttribute("currentPageSupplier",currentPage);  
     
     return "scm/listSupplier";
+  }
+  
+  //공급처 조회
+  @RequestMapping("listSupplier2.do")
+  @ResponseBody
+  public Map<String, Object> listSupplier_2(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+      HttpServletResponse response, HttpSession session) throws Exception{
+    
+    int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));  // 현재 페이지 번호
+    int pageSize    = Integer.parseInt((String)paramMap.get("pageSize"));      // 페이지 사이즈
+    int pageIndex   = (currentPage -1)*pageSize;                  // 페이지 시작 row 번호
+    
+    paramMap.put("pageIndex", pageIndex);
+    paramMap.put("pageSize", pageSize);
+    
+    // 공급처 목록 조회
+    List<SupplierInfoModel> listSupplierModel = supplierInfoService.listSupplier(paramMap);
+    model.addAttribute("listSupplierModel", listSupplierModel);
+    
+    // 공급처 목록 카운트 조회
+    int totalCount = supplierInfoService.totalCntSupplier(paramMap);
+    model.addAttribute("totalSupplier", totalCount);
+    
+    model.addAttribute("pageSize", pageSize);
+    model.addAttribute("currentPageSupplier",currentPage);
+    
+    // 공급처 목록 조회 - 신 버전
+    Map<String, Object> resultMap = new HashMap<>();
+    
+    resultMap.put("listSupplierModel", listSupplierModel);
+    resultMap.put("totalSupplier", totalCount);
+    resultMap.put("pageSize", pageSize);
+    resultMap.put("currentPageSupplier", currentPage);
+    
+    return resultMap;
   }
   
   //공급처 조회 - 뷰
