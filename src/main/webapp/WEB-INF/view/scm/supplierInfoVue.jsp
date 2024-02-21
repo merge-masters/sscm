@@ -59,8 +59,7 @@ function init(){
 	 axios.post('listSupplierVue.do', param)
 	  	  .then(response => {
 	  		  console.log(response);
-	  		//console.log("!!!!!!!!!!!!!!!" + JSON.stringify(param));
-	  		
+	  		  
 	  	  listSupplier.supdetail = response.data.listSupplierModel;
 	  	  listSupplier.supplierlist = response.data.listSupplierModel;
 		  var totalListSupDeatil = response.data.totalSupplier;
