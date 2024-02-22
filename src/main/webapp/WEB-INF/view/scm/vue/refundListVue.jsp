@@ -4,24 +4,24 @@
 <!DOCTYPE html">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>반품신청 목록 :: ChainMaker</title>
-<jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
-<link rel="stylesheet" href="${CTX_PATH}/css/view/scm/orderList.css">
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>반품신청 목록 :: ChainMaker</title>
+	<jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
+	<link rel="stylesheet" href="${CTX_PATH}/css/view/scm/orderList.css">
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <script>
 	//반품신청 목록 페이징 설정
 	
-	var currentPage = 1;
-	var pageSizeRefundList = 5;
-	var pageBlockSizerefundList = 10;
+	var currentPage = "1";
+	var pageSizeRefundList = "3";
+	var pageBlockSizerefundList = "10";
 	
 	var refundList;
 	var detailItem;
-
+	var pageVue;
 
 	$(document).ready(function() {
 	  // 반품신청 목록
@@ -31,6 +31,7 @@
 	});
 	
 	function init() {
+		// 반품신청 목록 리스트 Vue
 		refundList = new Vue({
 			el: '#divListProject',
 			data: {
@@ -62,7 +63,21 @@
 					getRefundDetail(num)
 				}
 			}
-		})	
+		})
+		
+		//반품 신청 목록 검색 vue
+		refundListForm = new Vue({
+			el:'#refundListForm',
+			methods: {
+				searchRefund : function() {
+					searchRefund();
+				}
+			}
+		})
+		
+		pageVue = new Vue({
+		})
+		
 	}
 	
 	/** 반품신청 목록 조회 콜백 함수 */
@@ -70,14 +85,12 @@
 	  console.log(data);
 	  refundList.refundListData = data.refundList;
 	  refundList.totalCount = data.refundListCnt;
-	  // 기존 목록 삭제
-// 	  $('#refundListHistory').empty().append(data);
-	
+	  
 	  // 총 개수 추출
-// 	  let totalCnt = $("#totcnt").val();
-// 	  console.log(totalCnt);
+	  console.log(refundList.totalCount);
+	  console.log(data.refundListCnt)
 	  // 페이지 네비게이션 생성
-	  var paginationHtml = getPaginationHtml(currentPage, refundList.totalCount, pageSizeRefundList, pageBlockSizerefundList, 'searchRefundList');
+// 	  var paginationHtml = getPaginationHtmlVue(currentPage, refundList.totalCount, pageSizeRefundList, pageBlockSizerefundList, 'searchRefundList');
 	
 // 	  $("#refundListPagination").empty().append(paginationHtml);
 	
@@ -86,30 +99,11 @@
 	  
 	};
 
-	/** 반품신청 목록 조회 */
-// 	function getRefundList(currentPage) {
-	  
-// 	  currentPage = currentPage || 1;
-	
-// 	  console.log("currentPage : " + currentPage);
-	
-// 	  var param = {
-// 	    currentPage: currentPage, 
-// 	    pageSize: pageSizeRefundList
-// 	  };
-	
-// 	  var resultCallback = function(data) {
-// 	    getRefundListResult(data, currentPage);
-// 	  };
-	  
-// 	  callAjax("/scm/refundListinfoVue.do", "post", "json", true, param, resultCallback);
-// 	};
-	
-
-	
+	// 반품 지시서 디테일 불러오기
 	function getRefundDetail(orderCode) {
 		console.log(orderCode);
 	  
+		//반품 지시서 Detail Vue
 		detailRefund = new Vue({
 			el: '#detailRefund',
 			data: {
@@ -134,18 +128,9 @@
 				})
 			},
 		})
-	  
-// 	  var param = {
-// 	      orderCode: orderCode
-//  	  };
-	  
-//  	  var resultCallback = function(data) {
-// 	    getRefundDetailResult(data);
-//  	  }
-	  
-//  	  callAjax("/scm/refundDetailInfo.do", "post", "text", true, param, resultCallback);
  	};
 	
+ 	// 반품지시서 디테일 그리기
  	function getRefundDetailResult(data) {
 	  console.log(data);
 		 var resultHTML = "<p class=\"conTitle\" style=\"margin-bottom: 1%;\">" +
@@ -198,7 +183,141 @@
 	 result.innerHTML  = resultHTML;
  	  $('#detailRefund').empty().append(result);
  	};
+ 	
+ 	// 반품신청 목록 검색
+ 	function searchRefund() {
+ 		console.log('검색기능 구현 test');
+		
+		var param = $('#refundListForm').serialize();
+		console.log(param);
+	 	currentPage = currentPage || 1;
+		  
+	 	param += "&currentPage="+currentPage;
+	 	param += "&pageSize="+pageSizeRefundList;
+		  
+	 	var startD = $('#startDate').val();
+	 	var endD = $('#endDate').val();
+		  
+	 	console.log(param);
+		  
+	 	// 날짜 에러 있을 때, 경고창 띄우고 refresh
+	 	if (startD > endD) {
+	 	  swal("시작일자가 종료일자보다 뒤에 있을 수 없습니다.\n날짜를 다시 지정해주세요.").then(function() {
+	 	    window.location.reload();
+	 	  });
+	 	  return 0;
+	 	}
+	 	
+	 	var paramJson = serializeToJson(param)
+	 	
+	 	console.log(paramJson);
+	 	
+	 	 axios({
+				url: '/scm/refundListinfoVue.do',
+				method: 'post',
+				async: true,
+				data: paramJson,
+			})
+			.then(function(response) {
+				console.log("SUCCESS===search", response.data);
+				getRefundListResult(response.data);
+			})
+			.catch(function(error) {
+				console.log("error : " + error);
+			})
+ 	}
+ 	
+ 	function serializeToJson(serializedString) {
+ 	    let jsonObject = {};
+ 	    serializedString.split('&').forEach(function(keyValue) {
+ 	        let keyValueArray = keyValue.split('=');
+ 	        let key = decodeURIComponent(keyValueArray[0]);
+ 	        let value = decodeURIComponent(keyValueArray[1]);
+ 	        if (!jsonObject[key]) {
+ 	            jsonObject[key] = value;
+ 	        } else if (Array.isArray(jsonObject[key])) {
+ 	            jsonObject[key].push(value);
+ 	        } else {
+ 	            jsonObject[key] = [jsonObject[key], value];
+ 	        }
+ 	    });
+ 	    return jsonObject;
+ 	}
+ 	
+ 	/**
+ 	 * 링크를 적용한 페이징 태그 생성
+ 	 * @param  currentPage 현재 페이지
+ 	 * @param  totalCount 총 건수
+ 	 * @param  pageRow 페이지당 보여주는 목록 갯수
+ 	 * @param  blockPage 페이지 번호 갯수 
+ 	 * @param  pageFunc  페이지 번호를 클릭하면 호출할 함수 객체
+ 	 * @param  exParams  pageFunc에 넘겨줄 추가적인 파라미터 ( optional / 가능한 파라미터 형식: 문자열 )
+ 	 * @return html 문자열
+ 	 */
+//  	function getPaginationHtmlVue(currentPage, totalCount, pageRow, blockPage, pageFunc, exParams)
+//  	{	
+//  		totalCount = parseInt(totalCount);
+//  		pageRow = parseInt(pageRow);
+//  		blockPage = parseInt(blockPage);
+ 	
+//  		var totalPage = Math.ceil(totalCount / pageRow);
+//  		if (totalPage == 0) {
+//  			totalPage = 1;
+//  		}
+
+//  		// 현재 페이지가 전체 페이지 수보다 크면 전체 페이지 수로 설정
+//  		if (currentPage > totalPage) {
+//  			currentPage = totalPage;
+//  		}
+
+//  		// 현재 페이지의 처음과 마지막 글의 번호 가져오기.
+//  		var startCount = (currentPage - 1) * pageRow;
+//  		var endCount = startCount + pageRow;
+
+//  		// 시작 페이지와 마지막 페이지 값 구하기.
+//  		startPage = Math.floor((currentPage - 1) / blockPage) * blockPage + 1;
+//  		endPage = startPage + blockPage - 1;
+
+//  		// 마지막 페이지가 전체 페이지 수보다 크면 전체 페이지 수로 설정
+//  		if (endPage > totalPage) {
+//  			endPage = totalPage;
+//  		}
+ 		
+//  		// 추가 파라미터가 있는 경우 함수 호출 파라미터로 적용
+//  		var sExParam = exParams==undefined ? "" : ",\"" + exParams.join("\",\"") + "\"";
+ 		
+//  		var pagingHtml = "<div class='paging'>";
+//  		pagingHtml += "<a class='first' href='javascript:"+pageFunc+"(1"+sExParam+")'><span class='hidden'>맨앞</span></a>";
+//  	  pagingHtml += "<a class='pre' href='javascript:"+pageFunc+"(" + (currentPage - 1 == 0 ? 1 : (currentPage -1))+")'><span class='hidden'>이전</span></a>";
+//  		for (var i = startPage; i <= endPage; i++) {
+//  			if (i > totalPage) {
+//  				break;
+//  			}
+ 			
+//  			if(i > startPage) {
+//  				firstPage = "";
+//  			}
+ 			
+//  			if (i == currentPage) {
+//  				pagingHtml += "<strong>" + i + "</strong>";
+//  			} else {
+//  				pagingHtml += " <a href=javascript:"+pageFunc+"(" + i + sExParam +")>" + i + "</a>";
+//  			}
+//  		}
+
+//  		pagingHtml += "<a class='next' href='javascript:"+pageFunc+"(" + (currentPage + 1 > totalPage ? currentPage : (currentPage + 1)) + ")'><span class='hidden'>다음</span></a>";
+//  		pagingHtml += "<a class='last' href='javascript:"+pageFunc+"(" + totalPage + sExParam + ")'><span class='hidden'>맨뒤</span></a>";
+//  		pagingHtml += "</div>";
+
+//  		return pagingHtml;
+//  	}
+ 	
+ 	
 	
+/* 위는 vue를 사용한 함수*/	
+/*=================================================*/	
+/* 밑은 vue를 사용한 함수*/
+
 // 	function closeRefundDetail() {
 // 	  $('#detailRefund').empty();
 // 	}
@@ -229,6 +348,43 @@
 // 	  }
 // 	}
 	
+// 	$('input[type="text"]').keydown(function(event) {
+// 	  if (event.keyCode === 13) {
+// 	    searchRefundList();
+// 	  };
+// 	});
+	
+	//function fExcelDownload(tableID, fileID){
+	//   $("#"+tableID).table2excel({
+	//     exclude: ".noExl",
+	//     name: "Excel Document Name",
+	//     filename: fileID +'.xls', // 확장자를 여기서 붙여줘야한다.
+	//     fileext: ".xls",
+	//     exclude_img: true,
+	//     exclude_links: true,
+	//     exclude_inputs: true
+	//     });
+	//}
+	
+		/** 반품신청 목록 조회 */
+// 	function getRefundList(currentPage) {
+	  
+// 	  currentPage = currentPage || 1;
+	
+// 	  console.log("currentPage : " + currentPage);
+	
+// 	  var param = {
+// 	    currentPage: currentPage, 
+// 	    pageSize: pageSizeRefundList
+// 	  };
+	
+// 	  var resultCallback = function(data) {
+// 	    getRefundListResult(data, currentPage);
+// 	  };
+	  
+// 	  callAjax("/scm/refundListinfoVue.do", "post", "json", true, param, resultCallback);
+// 	};
+
 	// 반품신청목록 검색 기능
 // 	function searchRefundList(currentPage) {
 // 	  var param = $('#refundListForm').serialize();
@@ -258,24 +414,6 @@
 	  
 // 	  callAjax("/scm/refundListInfo.do", "post", "text", true, param, resultCallback);
 // 	}
-	
-// 	$('input[type="text"]').keydown(function(event) {
-// 	  if (event.keyCode === 13) {
-// 	    searchRefundList();
-// 	  };
-// 	});
-	
-	//function fExcelDownload(tableID, fileID){
-	//   $("#"+tableID).table2excel({
-	//     exclude: ".noExl",
-	//     name: "Excel Document Name",
-	//     filename: fileID +'.xls', // 확장자를 여기서 붙여줘야한다.
-	//     fileext: ".xls",
-	//     exclude_img: true,
-	//     exclude_links: true,
-	//     exclude_inputs: true
-	//     });
-	//}
 </script>
 <body>
 	<input type="hidden" id="currentPage" value="1">
@@ -317,7 +455,7 @@
 									<input type="date" name="startDate" id="startDate" > 
 									<span>~</span> 
 									<input type="date" name="endDate" id="endDate">
-									<a class="btnType3 color2" id="refundListSearchBtn" href="javascript:searchRefundList();" style="padding-top: 2px;">검색</a>
+									<a class="btnType3 color2" id="refundListSearchBtn" @click="searchRefund" style="padding-top: 2px;">검색</a>
 								</div>
 							</div>
 							<div class="refund-container">

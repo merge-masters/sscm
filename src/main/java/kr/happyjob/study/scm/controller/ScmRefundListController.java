@@ -59,8 +59,12 @@ public class ScmRefundListController {
 		
 		logger.info("=====> RequestParam : " + paramMap);
 
-		int currentPage = (int) paramMap.get("currentPage"); // 현재페이지
-		int pageSize = (int) paramMap.get("pageSize");
+//		int currentPage = (int) paramMap.get("currentPage"); // 현재페이지
+//		int pageSize = (int) paramMap.get("pageSize");
+//		int pageIndex = (currentPage - 1) * pageSize;
+		
+		int currentPage = Integer.parseInt((String) paramMap.get("currentPage")); // 현재페이지
+		int pageSize = Integer.parseInt((String) paramMap.get("pageSize"));
 		int pageIndex = (currentPage - 1) * pageSize;
 
 		paramMap.put("pageIndex", pageIndex);
@@ -76,7 +80,7 @@ public class ScmRefundListController {
 		paramMap.forEach((key, value) -> {
 			System.out.println(String.format("key -> %s, value -> %s", key, value));
 			if (key.substring(0, 5).equals("check")) {
-				checkedStateList.add( (int) value);
+				checkedStateList.add(Integer.parseInt((String) value));
 			}
 		});
 		logger.info("checkedStateList: "+checkedStateList);
