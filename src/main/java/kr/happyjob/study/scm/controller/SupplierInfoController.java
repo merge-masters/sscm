@@ -29,35 +29,34 @@ public class SupplierInfoController {
   @RequestMapping("supplierInfo.do")
   public String initSupplierInfo(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
       HttpServletResponse response, HttpSession Session) throws Exception{
- 
     return "scm/supplierInfo2";
   }
   
-  //공급처 조회
-  @RequestMapping("listSupplier.do")
-  public String listSupplier(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-      HttpServletResponse response, HttpSession session) throws Exception{
-    
-    int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));  // 현재 페이지 번호
-    int pageSize    = Integer.parseInt((String)paramMap.get("pageSize"));      // 페이지 사이즈
-    int pageIndex   = (currentPage -1)*pageSize;                  // 페이지 시작 row 번호
-    
-    paramMap.put("pageIndex", pageIndex);
-    paramMap.put("pageSize", pageSize);
-    
-    // 공급처 목록 조회
-    List<SupplierInfoModel> listSupplierModel = supplierInfoService.listSupplier(paramMap);
-    model.addAttribute("listSupplierModel", listSupplierModel);
-    
-    // 공급처 목록 카운트 조회
-    int totalCount = supplierInfoService.totalCntSupplier(paramMap);
-    model.addAttribute("totalSupplier", totalCount);
-    
-    model.addAttribute("pageSize", pageSize);
-    model.addAttribute("currentPageSupplier",currentPage);  
-    
-    return "scm/listSupplier";
-  }
+//  //공급처 조회
+//  @RequestMapping("listSupplier.do")
+//  public String listSupplier(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+//      HttpServletResponse response, HttpSession session) throws Exception{
+//    
+//    int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));  // 현재 페이지 번호
+//    int pageSize    = Integer.parseInt((String)paramMap.get("pageSize"));      // 페이지 사이즈
+//    int pageIndex   = (currentPage -1)*pageSize;                  // 페이지 시작 row 번호
+//    
+//    paramMap.put("pageIndex", pageIndex);
+//    paramMap.put("pageSize", pageSize);
+//    
+//    // 공급처 목록 조회
+//    List<SupplierInfoModel> listSupplierModel = supplierInfoService.listSupplier(paramMap);
+//    model.addAttribute("listSupplierModel", listSupplierModel);
+//    
+//    // 공급처 목록 카운트 조회
+//    int totalCount = supplierInfoService.totalCntSupplier(paramMap);
+//    model.addAttribute("totalSupplier", totalCount);
+//    
+//    model.addAttribute("pageSize", pageSize);
+//    model.addAttribute("currentPageSupplier",currentPage);  
+//    
+//    return "scm/listSupplier";
+//  }
   
   //공급처 조회
   @RequestMapping("listSupplier2.do")
@@ -71,17 +70,17 @@ public class SupplierInfoController {
     
     paramMap.put("pageIndex", pageIndex);
     paramMap.put("pageSize", pageSize);
-    
+
     // 공급처 목록 조회
     List<SupplierInfoModel> listSupplierModel = supplierInfoService.listSupplier(paramMap);
-    model.addAttribute("listSupplierModel", listSupplierModel);
+//    model.addAttribute("listSupplierModel", listSupplierModel);
     
     // 공급처 목록 카운트 조회
     int totalCount = supplierInfoService.totalCntSupplier(paramMap);
-    model.addAttribute("totalSupplier", totalCount);
-    
-    model.addAttribute("pageSize", pageSize);
-    model.addAttribute("currentPageSupplier",currentPage);
+//    model.addAttribute("totalSupplier", totalCount);
+//    
+//    model.addAttribute("pageSize", pageSize);
+//    model.addAttribute("currentPageSupplier",currentPage);
     
     // 공급처 목록 조회 - 신 버전
     Map<String, Object> resultMap = new HashMap<>();
@@ -89,46 +88,52 @@ public class SupplierInfoController {
     resultMap.put("listSupplierModel", listSupplierModel);
     resultMap.put("totalSupplier", totalCount);
     resultMap.put("pageSize", pageSize);
-    resultMap.put("currentPageSupplier", currentPage);
+    resultMap.put("currentPage", currentPage);
+    
+    
+    System.out.println("===========================listSupplierModel===========================: " + listSupplierModel);
+    System.out.println("===========================totalCount===========================: " + totalCount);
+    System.out.println("===========================pageSize===========================: " + pageSize);
+    System.out.println("===========================currentPage===========================: " + currentPage);
     
     return resultMap;
   }
   
-  //공급처 조회 - 뷰
-  @RequestMapping("listSupplierVue.do")
-  @ResponseBody
-  public Map<String, Object> listSupplierVue(Model model, @RequestBody Map<String, Object> paramMap, HttpServletRequest request,
-      HttpServletResponse response, HttpSession session) throws Exception{
-    
-/*	logger.info("+ Start " + className );
-	logger.info("   - paramMap : " + paramMap);*/
-		
-    int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));  // 현재 페이지 번호
-    int pageSize    = (int) paramMap.get("pageSize");     // 페이지 사이즈
-    int pageIndex   = (currentPage -1)*pageSize;          // 페이지 시작 row 번호
-    
-    paramMap.put("pageIndex", pageIndex);
-    paramMap.put("pageSize", pageSize);
-    
-    // 공급처 목록 조회
-    List<SupplierInfoModel> listSupplierModel = supplierInfoService.listSupplier(paramMap);
-    
-    // 공급처 목록 카운트 조회
-    int totalCount = supplierInfoService.totalCntSupplier(paramMap);
-    
-    Map<String, Object> resultMap = new HashMap<>();
-    
-    resultMap.put("listSupplierModel", listSupplierModel);
-    resultMap.put("totalCount", totalCount);
-    resultMap.put("pageSize", pageSize);
-    resultMap.put("currentPageSupplier",currentPage);
-    
-    return resultMap;
-  }
+//  //공급처 조회 - 뷰
+//  @RequestMapping("listSupplierVue.do")
+//  @ResponseBody
+//  public Map<String, Object> listSupplierVue(Model model, @RequestBody Map<String, Object> paramMap, HttpServletRequest request,
+//      HttpServletResponse response, HttpSession session) throws Exception{
+//    
+///*	logger.info("+ Start " + className );
+//	logger.info("   - paramMap : " + paramMap);*/
+//		
+//    int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));  // 현재 페이지 번호
+//    int pageSize    = (int) paramMap.get("pageSize");     // 페이지 사이즈
+//    int pageIndex   = (currentPage -1)*pageSize;          // 페이지 시작 row 번호
+//    
+//    paramMap.put("pageIndex", pageIndex);
+//    paramMap.put("pageSize", pageSize);
+//    
+//    // 공급처 목록 조회
+//    List<SupplierInfoModel> listSupplierModel = supplierInfoService.listSupplier(paramMap);
+//    
+//    // 공급처 목록 카운트 조회
+//    int totalCount = supplierInfoService.totalCntSupplier(paramMap);
+//    
+//    Map<String, Object> resultMap = new HashMap<>();
+//    
+//    resultMap.put("listSupplierModel", listSupplierModel);
+//    resultMap.put("totalCount", totalCount);
+//    resultMap.put("pageSize", pageSize);
+//    resultMap.put("currentPageSupplier",currentPage);
+//    
+//    return resultMap;
+//  }
   
   //제품목록 조회
   @RequestMapping("listSupplierProduct.do")
-  public String listSupplierProduct(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+  public Map<String, Object> listSupplierProduct(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
       HttpServletResponse response, HttpSession session) throws Exception{
     
     int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));  // 현재 페이지 번호
@@ -143,17 +148,29 @@ public class SupplierInfoController {
     
     // 제품 목록 조회
     List<SupplierInfoModel> listSupplierProductModel = supplierInfoService.listSupplierProduct(paramMap);
-    model.addAttribute("listSupplierProductModel", listSupplierProductModel);
+   // model.addAttribute("listSupplierProductModel", listSupplierProductModel);
     
     // 제품 목록 카운트 조회
     int totalCount = supplierInfoService.totalCntProduct(paramMap);
-    model.addAttribute("totalProduct", totalCount);
+//    model.addAttribute("totalProduct", totalCount);
+//    
+//    model.addAttribute("pageSize", pageSize);
+//    model.addAttribute("currentPageProduct",currentPage);
     
-    model.addAttribute("pageSize", pageSize);
-    model.addAttribute("currentPageProduct",currentPage);
+    
+    // 20240222
+    Map<String, Object> resultMap = new HashMap<>();
+    resultMap.put("listSupplierProductModel", listSupplierProductModel);
+    resultMap.put("pageIndex", pageIndex);
+    resultMap.put("pageSize", pageSize);
+    resultMap.put("totalProduct", totalCount);
+    resultMap.put("currentPageProduct", currentPage);
+    
+    System.out.println("============================================listSupplierProductModel: " + listSupplierProductModel);
     
     
-    return "scm/listSupplierProduct";
+//    return "scm/listSupplierProduct";
+    	return resultMap;
   }
   
 //공급처 저장

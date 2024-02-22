@@ -39,19 +39,29 @@
 	    
 	    function init(){
 	    	listSupplier = new Vue({
-	    										el: "#supplierVue",
-	    										data: {
-	    											supplierlist: []
-	    										},
-	    										method: {
-	    											supplierVue: function() {
-	    												fListSupplier();					// 공급처 조회
-	    												flistSupplierResult();			// 공급처 조회 콜백 함수
-	    												fListProduct();					// 제품 목록 조회 함수
-	    												flistProductResult();			// 제품 목록 조회 콜백 함수
-	    											}
-	    										}
-	    	})
+				el: "#supplierVue",
+				data: {
+					supplierlist: []
+				},
+				methods: {
+					detailSupplier: function() {
+						flistSupplierResult();			// 공급처 조회 콜백 함수
+						fListProduct();					// 제품 목록 조회 함수
+						callfListProduct();
+						flistProductResult();			// 제품 목록 조회 콜백 함수
+						fDeleteSupplier();				// 공급처 삭제 함수
+					},
+					board_search: function(currentPage) {
+						board_search(currentPage);				// 검색 함수
+					},
+		            fListSupplier: function() {
+		                fListSupplier(); 			                    // 공급처 조회 함수
+		            }
+				},
+				created: function() {
+					this.fListSupplier();								// 공급처 조회
+				}
+	    	});
 	    }
 	
 	    /*버튼 이벤트 등록*/
@@ -76,17 +86,19 @@
 	        });
 	    }
 	
+	    
+	    /*  */
 	
 	    /*공급처 조회*/
 	    function fListSupplier(currentPage) {
 	        currentPage = currentPage || 1;
-	        var sname = $('#sname');
-	        var searchKey = document.getElementById("searchKey");
-	        var oname = searchKey.options[searchKey.selectedIndex].value;
+	        var sname = $('#sname').val();
+	        var searchKey = $("#searchKey").val();
+//	        var oname = searchKey.options[searchKey.selectedIndex].value;
 	
 	        var param = {
-	            sname: sname.val(),
-	            oname: oname,
+	            sname: sname,
+	            oname: searchKey,
 	            currentPage: currentPage,
 	            pageSize: pageSizeSupplier
 	        }
@@ -312,13 +324,15 @@
 	    function board_search(currentPage) {
 	        $('#listSupplierProduct').empty();
 	        currentPage = currentPage || 1;
-	        var sname = $('#sname');
-	        var searchKey = document.getElementById("searchKey");
-	        var oname = searchKey.options[searchKey.selectedIndex].value;
+//	      var sname = $('#sname');
+//	      var searchKey = document.getElementById("searchKey");
+//	      var oname = searchKey.options[searchKey.selectedIndex].value;
+			var sname = $('#sname').val;
+			var searchKey = ("#searchKey").val;
 	
 	        var param = {
-	            sname: sname.val(),
-	            oname: oname,
+	            sname: sname,
+	            oname: searchKey,
 	            currentPage: currentPage,
 	            pageSize: pageSizeSupplier
 	        }
@@ -397,7 +411,7 @@
 	                            </span>
 	                        </p>
 							
-							<div id="supplierVue">loadSupplierList
+							<div id="supplierVue">
 							
 		                        <div class="SupplierList">
 		                            <div class="conTitle" style="margin: 0 25px 10px 0; float: left;">
@@ -409,7 +423,7 @@
 		                                </select>
 		                                <input type="text" style="width: 300px; height: 30px;" id="sname"
 		                                    name="sname">
-		                                <a href="" class="btnType blue" id="searchBtn" name="btn">
+		                                <a href="" class="btnType blue" id="searchBtn" name="btn" @click="board_search">
 		                                    <span>검 색</span>
 		                                </a>
 		                            </div>
@@ -438,8 +452,8 @@
 		                                        <th scope="col">비고</th>
 		                                    </tr>
 		                                </thead>
-		                                <tbody id="listSupplier" v-for="(item, index) in supplierlist" v-if="supplierlist.length">
-		                                	<tr>
+		                                <tbody id="listSupplier">
+		                                	<tr v-for="(item, index) in supplierlist"  @click="detailSupplier(item.supply_nm)" style="cursot: pointer;" v-if="supplierlist.length">
 		                                		<td>{{item.supply_cd}}</td>
 		                                		<td>{{item.supply_nm}}</td>
 		                                		<td>{{item.tel}}</td>
