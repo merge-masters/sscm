@@ -13,25 +13,33 @@
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <script>
-	//반품신청 목록 페이징 설정
-	
+
 	var currentPage = "1";
-	var pageSizeRefundList = "3";
-	var pageBlockSizerefundList = "10";
+	var pageSizeRefundList = "10";
+// 	var pageBlockSizerefundList = "10";
+	
+	var itemsPerPage = 2;
 	
 	var refundList;
 	var detailItem;
 	var pageVue;
-
+	
+	var refundData;
+	var totalPage;
+	
 	$(document).ready(function() {
 	  // 반품신청 목록
 	  init()
-// 	  getRefundList();
-	  
 	});
 	
+	// 페이지 초기화.
 	function init() {
-		// 반품신청 목록 리스트 Vue
+		refundListLoad();
+		refundListSearchFormLoad();
+	}
+	
+	// 반품신청 목록 리스트 Vue
+	function refundListLoad() {
 		refundList = new Vue({
 			el: '#divListProject',
 			data: {
@@ -51,7 +59,8 @@
 				})
 				.then(function(response) {
 					console.log("SUCCESS", response.data);
-					getRefundListResult(response.data);
+// 				getRefundListResult(response.data, currentPage);
+					pagingVue(response.data, currentPage);
 				})
 				.catch(function(error) {
 					console.log("error : " + error);
@@ -64,8 +73,10 @@
 				}
 			}
 		})
-		
-		//반품 신청 목록 검색 vue
+	}
+	
+	//반품 신청 목록 검색 vue
+	function refundListSearchFormLoad() {
 		refundListForm = new Vue({
 			el:'#refundListForm',
 			methods: {
@@ -74,31 +85,110 @@
 				}
 			}
 		})
-		
+	}
+	
+	
+	function pagingVue(data, currentPage) {
+		refundData = data;
 		pageVue = new Vue({
+			el:"#refundListPagination",
+			mounted: function() {
+					renderPage();
+			}
 		})
+	}
+	
+	function renderPage() {
+		var test2 = paginateData(refundData.refundList, currentPage, itemsPerPage);
+		 getRefundListResult(test2, currentPage);
 		
+		totalPage = Math.ceil(refundData.refundList.length/itemsPerPage)
+		console.log("totalPage : " + totalPage);
+		 renderPagination(totalPage)
 	}
 	
 	/** 반품신청 목록 조회 콜백 함수 */
 	function getRefundListResult(data, currentPage) {
+	  
 	  console.log(data);
-	  refundList.refundListData = data.refundList;
+	  refundList.refundListData = data;
 	  refundList.totalCount = data.refundListCnt;
 	  
 	  // 총 개수 추출
 	  console.log(refundList.totalCount);
 	  console.log(data.refundListCnt)
-	  // 페이지 네비게이션 생성
-// 	  var paginationHtml = getPaginationHtmlVue(currentPage, refundList.totalCount, pageSizeRefundList, pageBlockSizerefundList, 'searchRefundList');
-	
-// 	  $("#refundListPagination").empty().append(paginationHtml);
-	
-	  // 현재 페이지 설정
-// 	  $("#currentPage").val(currentPage);
-	  
+	   
 	};
-
+	
+	function getRefundListResult2(data, currentPage) {
+		  console.log(data.refundList);
+		  refundList.refundListData = data.refundList;
+		  refundList.totalCount = data.refundListCnt;
+		  
+		  // 총 개수 추출
+		  console.log(refundList.totalCount);
+		  console.log(data.refundListCnt)
+		   
+		};
+	
+	// paging 해서 보여주는 데이터
+	function paginateData(data, currentPage, itemsPerPage) {
+		var startIndex = (currentPage - 1) * itemsPerPage;
+		var endIndex = startIndex + itemsPerPage;
+		return data.slice(startIndex, endIndex);
+	}
+	
+	// 버튼 생성해서 보여주는 기능
+	function renderPagination(totalPages) {
+		var paginationContainer = document.getElementById("refundListPagination");
+		 paginationContainer.innerHTML = ""
+		 
+		 var firstButton = document.createElement("button");
+		 firstButton.textContent = "처음";
+		 firstButton.classList.add("pageButton");
+		 firstButton.addEventListener("click", () => {
+			 console.log('처음처음')
+			 currentPage = 1;
+			 renderPage() // 데이터를 그리는 함수
+		 })
+		 paginationContainer.appendChild(firstButton);
+		 
+		 var prevButton = document.createElement("button");
+		 prevButton.textContent = "이전";
+		 prevButton.classList.add("pageButton");
+		 prevButton.addEventListener('click', () => {
+			 console.log('이전이전')
+			 if(currentPage > 1) {
+				 currentPage--;
+				 renderPage();
+			 }
+		 });
+		 paginationContainer.appendChild(prevButton);
+		 
+		 var nextButton = document.createElement("button");
+		 nextButton.textContent = "다음";
+		 nextButton.classList.add("pageButton");
+		 nextButton.addEventListener("click", () => {
+			 console.log('다음다음')
+			 if(currentPage < totalPages) {
+				 currentPage++;
+				 console.log(currentPage);
+				 renderPage();
+			 }
+		 });
+		 paginationContainer.appendChild(nextButton);
+		 
+		 var lastButton = document.createElement("button");
+		 lastButton.textContent = "마지막";
+		 lastButton.classList.add("pageButton");
+		 lastButton.addEventListener("click", () => {
+			 console.log('마지막마지막')
+			 currentPage = totalPages;
+			 renderPage();
+		 });
+		 paginationContainer.appendChild(lastButton);
+	}
+	
 	// 반품 지시서 디테일 불러오기
 	function getRefundDetail(orderCode) {
 		console.log(orderCode);
@@ -184,6 +274,50 @@
  	  $('#detailRefund').empty().append(result);
  	};
  	
+ 	function getRefundDetailResult2(data) {
+ 		// 새로운 테이블 요소 생성
+ 		var table = document.createElement('table');
+ 		table.classList.add('col');
+ 		
+ 		// thead 요소 생성
+ 		var thead = document.createElement('thead');
+ 		var headerRow = document.createElement('tr');
+ 		var headerTitles = ['SCM 관리자', '반품지시일자', '제품번호', '주문일자', '제품명', '품목명'];
+ 		headerTitles.forEach(title => {
+ 			var th = document.createElement('th');
+ 			th.textContent = title;
+ 			headerRow.appendChild(th);
+ 		});
+ 		thead.appendChild(headerRow);
+ 		table.appendChild(thead);
+ 		
+ 		// tbody 요소 생성
+ 		var tbody = document.createElement('tbody');
+ 		var dataRow = document.createElement('tr');
+ 		var dataValues = [data.scmManager, data.refundDate, data.productCode, data.orderDate, data.productName, data.middleCategory];
+ 		dataValues.forEach(value => {
+ 			var td = document.createElement('td');
+ 			td.textContent = value;
+ 			dataRow.appendChild(td);
+ 		});
+ 		tbody.appendChild(dataRow);
+ 		
+ 		// 두 번째 thead 요소 생성
+ 		var secondTbody = document.createElement('tbody');
+ 		var secondDataRow = document.createElement('tr');
+ 		var secondHeaderTitles = ['공급처명', '반품일자', '창고명', '반품수량', '반품금액(원)', '상태'];
+ 		secondHeaderTitles.forEach(title => {
+ 			var th = document.createElement('th');
+ 			th.textContent = title;
+ 			secondHeaderRow.appendChild(th);
+ 		});
+ 		secondThead.appendChild(secondHeaderRow);
+ 		table.appendChild(secondThead);
+ 		
+ 		// 두 번째 tbody 요소 생성
+ 		
+ 	} 
+ 	
  	// 반품신청 목록 검색
  	function searchRefund() {
  		console.log('검색기능 구현 test');
@@ -220,7 +354,7 @@
 			})
 			.then(function(response) {
 				console.log("SUCCESS===search", response.data);
-				getRefundListResult(response.data);
+				getRefundListResult2(response.data);
 			})
 			.catch(function(error) {
 				console.log("error : " + error);
