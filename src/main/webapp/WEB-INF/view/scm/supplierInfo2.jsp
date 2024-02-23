@@ -50,6 +50,7 @@
 						callfListProduct();
 						flistProductResult();			// 제품 목록 조회 콜백 함수
 						fDeleteSupplier();				// 공급처 삭제 함수
+						fSelectSupplier();				// 공급처 단건 조회 함수
 					},
 					board_search: function(currentPage) {
 						board_search(currentPage);				// 검색 함수
@@ -104,6 +105,7 @@
 	        }
 	        var resultCallback = function (data) {
 	            flistSupplierResult(data, currentPage);
+	            
 	        };
 	        callAjax("/scm/listSupplier2.do", "post", "text", true, param, resultCallback);
 	    }
@@ -111,17 +113,24 @@
 		// 여기서 콜백한 리스트를 담는 작업을 해야한다 20240221
 	    /*공급처 조회 콜백 함수*/
 	    function flistSupplierResult(data, currentPage) {
-	
-	        console.log("data : " + data);
+			data = JSON.parse(data);
+// 	        console.log("data : " + data);
+	        console.log("dataList : " + data.listSupplierModel);
+	        
+	        // 20240223
+	        // listSupplier의 supplierlist를 새로운 data에 담아 listSupplierModel만 불러와서 뿌림
+	        listSupplier.supplierlist = data.listSupplierModel;
+	        
+	        
 	        //기존 목록 삭제
-	        $("#listSupplier").empty();
-	        $("#listSupplier").append(data);
-	        // 총 개수 추출
+// 	        $("#listSupplier").empty();
+// 	        $("#listSupplier").append(data);
+//	        총 개수 추출
 	        var totalSupplier = $("#totalSupplier").val();
-	        //페이지 네비게이션 생성
+//	        페이지 네비게이션 생성
 	        var paginationHtml = getPaginationHtml(currentPage, totalSupplier, pageSizeSupplier, pageBlockSizeSupplier, 'fListSupplier');
 	        $("#supplierPagination").empty().append(paginationHtml);
-	        //현재 페이지 설정
+//	        현재 페이지 설정
 	        $("#currentPageSupplier").val(currentPage);
 	    }
 	
@@ -453,14 +462,14 @@
 		                                    </tr>
 		                                </thead>
 		                                <tbody id="listSupplier">
-		                                	<tr v-for="(item, index) in supplierlist"  @click="detailSupplier(item.supply_nm)" style="cursot: pointer;" v-if="supplierlist.length">
-		                                		<td>{{item.supply_cd}}</td>
-		                                		<td>{{item.supply_nm}}</td>
-		                                		<td>{{item.tel}}</td>
-		                                		<td>{{item.supply_mng_nm}}</td>
-		                                		<td>{{item.mng_tel}}</td>
-		                                		<td>{{item.email}}</td>
-		                                		<td>{{item.warehouse_nm}}</td>
+		                                	<tr v-if="supplierlist.length" v-for="(item, index) in supplierlist">
+		                                		<td>{{ item.supply_cd }}</td>
+		                                		<td  @click="detailSupplier(item.supply_nm)" style="cursor: pointer;">{{ item.supply_nm }}</td>
+		                                		<td>{{ item.tel }}</td>
+		                                		<td>{{ item.supply_mng_nm }}</td>
+		                                		<td>{{ item.mng_tel }}</td>
+		                                		<td>{{ item.email }}</td>
+		                                		<td>{{ item.warehouse_nm }}</td>
 		                                	</tr>
 		                                </tbody>
 		                            </table>

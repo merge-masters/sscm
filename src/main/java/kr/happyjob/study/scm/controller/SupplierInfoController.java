@@ -90,12 +90,6 @@ public class SupplierInfoController {
     resultMap.put("pageSize", pageSize);
     resultMap.put("currentPage", currentPage);
     
-    
-    System.out.println("===========================listSupplierModel===========================: " + listSupplierModel);
-    System.out.println("===========================totalCount===========================: " + totalCount);
-    System.out.println("===========================pageSize===========================: " + pageSize);
-    System.out.println("===========================currentPage===========================: " + currentPage);
-    
     return resultMap;
   }
   
@@ -133,6 +127,7 @@ public class SupplierInfoController {
   
   //제품목록 조회
   @RequestMapping("listSupplierProduct.do")
+  @ResponseBody
   public Map<String, Object> listSupplierProduct(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
       HttpServletResponse response, HttpSession session) throws Exception{
     
@@ -164,10 +159,7 @@ public class SupplierInfoController {
     resultMap.put("pageIndex", pageIndex);
     resultMap.put("pageSize", pageSize);
     resultMap.put("totalProduct", totalCount);
-    resultMap.put("currentPageProduct", currentPage);
-    
-    System.out.println("============================================listSupplierProductModel: " + listSupplierProductModel);
-    
+    resultMap.put("currentPageProduct", currentPage);    
     
 //    return "scm/listSupplierProduct";
     	return resultMap;
