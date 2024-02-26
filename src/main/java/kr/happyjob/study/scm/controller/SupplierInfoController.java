@@ -29,7 +29,8 @@ public class SupplierInfoController {
   @RequestMapping("supplierInfo.do")
   public String initSupplierInfo(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
       HttpServletResponse response, HttpSession Session) throws Exception{
-    return "scm/supplierInfo2";
+	  	return "scm/supplierInfo2";
+//		return "scm/supplierInfoVue";
   }
   
 //  //공급처 조회
@@ -141,9 +142,12 @@ public class SupplierInfoController {
     paramMap.put("pageSize", pageSize);
    
     
+    System.out.println("supply_cd:::" + paramMap.get("supply_cd"));
+    
     // 제품 목록 조회
     List<SupplierInfoModel> listSupplierProductModel = supplierInfoService.listSupplierProduct(paramMap);
    // model.addAttribute("listSupplierProductModel", listSupplierProductModel);
+    System.out.println("size:::" + listSupplierProductModel.size());
     
     // 제품 목록 카운트 조회
     int totalCount = supplierInfoService.totalCntProduct(paramMap);

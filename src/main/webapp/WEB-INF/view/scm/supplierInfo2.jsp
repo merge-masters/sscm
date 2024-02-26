@@ -42,16 +42,18 @@
 				el: "#supplierVue",
 				data: {
 					supplierlist: [],
-	    			detailSupplier: []
+					detailsupplier: []
 				},
 				methods: {
-					detailSupplier: function() {
+					supplierList: function() {
 						flistSupplierResult();			// 공급처 조회 콜백 함수
-						fListProduct();							// 제품 목록 조회 함수
-						callfListProduct();
 						fSelectSupplier();						// 공급처 단건 조회 함수
-						flistProductResult();			// 제품 목록 조회 콜백 함수
 						fDeleteSupplier();						// 공급처 삭제 함수
+					},
+					detailSupplier: function(supplyCd) {
+						fListProduct(supplyCd);
+						//callfListProduct();
+						console.log("선택한 공급처: ", tmpsupply_nm, " 코드: ", tmpsupply_cd);
 					},
 					board_search: function(currentPage) {
 						board_search(currentPage);				// 검색 함수
@@ -59,12 +61,9 @@
 		            fListSupplier: function() {
 		                fListSupplier(); 			                    // 공급처 조회 함수
 		            }
-				},
-				created: function() {
-					this.fListSupplier();								// 공급처 조회
 				}
 	    	});
-	    }
+	    };
 	
 	    /*버튼 이벤트 등록*/
 	    function fRegisterButtonClickEvent() {
@@ -146,16 +145,15 @@
 	
 	
 	    /*제품 목록 조회*/
-	    function fListProduct(currentPage) {
+	    function fListProduct(supply_cd, currentPage) {
 	        //공급처명 매개변수 설정
 	        currentPage = currentPage || 1;
 	
-	        var supply_nm = $("#tmpsupply_nm").val();
-	        var supply_cd = $("#tmpsupply_cd").val();
+	        //var supply_nm = $("#tmpsupply_nm").val();
+	        //var supply_cd = $("#tmpsupply_cd").val();
 	
 	        var param = {
-	            supply_nm: supply_nm
-	            , supply_cd: supply_cd //공급처 코드 변수설정
+	           supply_cd: supply_cd //공급처 코드 변수설정
 	            , currentPage: currentPage
 	            , pageSize: pageSizeProduct
 	        }
@@ -169,6 +167,9 @@
 	    /*제품목록 조회 콜백 함수*/
 	    function flistProductResult(data, currentPage) {
 	        console.log("data : " + data);
+	        data = JSON.parse(data)
+	        listSupplier.detailSupplier = data.listSupplierProductModel;
+	        
 	        // 공급 제품정보 + 공급처명
 	        $('#subTitle').text(" - " + $("#tmpsupply_nm").val());
 	        //기존 목록 삭제
@@ -205,12 +206,10 @@
 	
 	    /* 공급처 단건 조회*/
 	    function fSelectSupplier(supply_cd) {
-	    	//20240226
 	    	var param = {
 	            supply_cd: supply_cd
 	        };
 	        var resultCallback = function (data) {
-	        	listSupplier.detailSupplier = data.supplierInfoModel;
 	        	fSelectSupplierResult(data);
 	        };
 	        
@@ -340,8 +339,8 @@
 //	      var sname = $('#sname');
 //	      var searchKey = document.getElementById("searchKey");
 //			var oname = searchKey.options[searchKey.selectedIndex].value;
-			var sname = $('#sname').val;
-			var searchKey = $("#searchKey").val;
+			var sname = $('#sname').val();
+			var searchKey = $("#searchKey").val();
 			var oname = $("#searchKey option:selected").val();
 	
 	        var param = {
@@ -466,8 +465,8 @@
 		                                        <th scope="col">비고</th>
 		                                    </tr>
 		                                </thead>
-		                                <tbody id="listSupplier" v-if="supplierlist.length" v-for="(item, index) in supplierlist">
-		                                	<tr v-on:click="detailSupplier(item.supply_nm)">
+		                                <tbody id="listSupplier" v-if="supplierlist.length">
+		                                	<tr v-on:click="detailSupplier(item.supply_cd)"  v-for="(item, index) in supplierlist" :key="index">
 		                                		<td>{{ item.supply_cd }}</td>
 		                                		<td  style="cursor: pointer;">{{ item.supply_nm }}</td>
 		                                		<td>{{ item.tel }}</td>
