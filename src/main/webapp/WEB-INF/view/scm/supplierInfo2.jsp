@@ -41,16 +41,17 @@
 	    	listSupplier = new Vue({
 				el: "#supplierVue",
 				data: {
-					supplierlist: []
+					supplierlist: [],
+	    			detailSupplier: []
 				},
 				methods: {
 					detailSupplier: function() {
 						flistSupplierResult();			// 공급처 조회 콜백 함수
-						fListProduct();					// 제품 목록 조회 함수
+						fListProduct();							// 제품 목록 조회 함수
 						callfListProduct();
+						fSelectSupplier();						// 공급처 단건 조회 함수
 						flistProductResult();			// 제품 목록 조회 콜백 함수
-						fDeleteSupplier();				// 공급처 삭제 함수
-						fSelectSupplier();				// 공급처 단건 조회 함수
+						fDeleteSupplier();						// 공급처 삭제 함수
 					},
 					board_search: function(currentPage) {
 						board_search(currentPage);				// 검색 함수
@@ -95,11 +96,12 @@
 	        currentPage = currentPage || 1;
 	        var sname = $('#sname').val();
 	        var searchKey = $("#searchKey").val();
+	        var oname = $("#searchKey option:selected").val();
 //	        var oname = searchKey.options[searchKey.selectedIndex].value;
 	
 	        var param = {
 	            sname: sname,
-	            oname: searchKey,
+	            oname: oname,
 	            currentPage: currentPage,
 	            pageSize: pageSizeSupplier
 	        }
@@ -107,20 +109,19 @@
 	            flistSupplierResult(data, currentPage);
 	            
 	        };
-	        callAjax("/scm/listSupplier2.do", "post", "text", true, param, resultCallback);
+	        callAjax("/scm/listSupplier.do", "post", "text", true, param, resultCallback);
 	    }
 	
 		// 여기서 콜백한 리스트를 담는 작업을 해야한다 20240221
 	    /*공급처 조회 콜백 함수*/
 	    function flistSupplierResult(data, currentPage) {
 			data = JSON.parse(data);
-// 	        console.log("data : " + data);
+ 	        console.log("data : " + data);
 	        console.log("dataList : " + data.listSupplierModel);
 	        
 	        // 20240223
 	        // listSupplier의 supplierlist를 새로운 data에 담아 listSupplierModel만 불러와서 뿌림
-	        listSupplier.supplierlist = data.listSupplierModel;
-	        
+	        listSupplier.supplierlist = data.listSupplierModel;	        
 	        
 	        //기존 목록 삭제
 // 	        $("#listSupplier").empty();
@@ -204,12 +205,15 @@
 	
 	    /* 공급처 단건 조회*/
 	    function fSelectSupplier(supply_cd) {
-	        var param = {
+	    	//20240226
+	    	var param = {
 	            supply_cd: supply_cd
 	        };
 	        var resultCallback = function (data) {
-	            fSelectSupplierResult(data);
+	        	listSupplier.detailSupplier = data.supplierInfoModel;
+	        	fSelectSupplierResult(data);
 	        };
+	        
 	        callAjax("/scm/selectSupplier.do", "post", "json", true, param,
 	            resultCallback);
 	    }
@@ -335,13 +339,14 @@
 	        currentPage = currentPage || 1;
 //	      var sname = $('#sname');
 //	      var searchKey = document.getElementById("searchKey");
-//	      var oname = searchKey.options[searchKey.selectedIndex].value;
+//			var oname = searchKey.options[searchKey.selectedIndex].value;
 			var sname = $('#sname').val;
-			var searchKey = ("#searchKey").val;
+			var searchKey = $("#searchKey").val;
+			var oname = $("#searchKey option:selected").val();
 	
 	        var param = {
 	            sname: sname,
-	            oname: searchKey,
+	            oname: oname,
 	            currentPage: currentPage,
 	            pageSize: pageSizeSupplier
 	        }
@@ -350,7 +355,7 @@
 	        var resultCallback = function (data) {
 	            flistSupplierResult(data, currentPage);
 	        };
-	        callAjax("/scm/listSupplier2.do", "post", "text", true, param,
+	        callAjax("/scm/listSupplier.do", "post", "text", true, param,
 	            resultCallback);
 	    }
 	
@@ -411,7 +416,7 @@
 	
 	                                <!-- 요부분 vue로 변경 -->
 	                                <a href="javascript:fPopModalSupplier()" class="btnType blue" name="modal"
-	                                    style="float: right;">
+	                                    style="float: right; display: none;">
 	                                    <span>신규등록</span>
 	                                </a>
 	
@@ -461,15 +466,16 @@
 		                                        <th scope="col">비고</th>
 		                                    </tr>
 		                                </thead>
-		                                <tbody id="listSupplier">
-		                                	<tr v-if="supplierlist.length" v-for="(item, index) in supplierlist">
+		                                <tbody id="listSupplier" v-if="supplierlist.length" v-for="(item, index) in supplierlist">
+		                                	<tr v-on:click="detailSupplier(item.supply_nm)">
 		                                		<td>{{ item.supply_cd }}</td>
-		                                		<td  @click="detailSupplier(item.supply_nm)" style="cursor: pointer;">{{ item.supply_nm }}</td>
+		                                		<td  style="cursor: pointer;">{{ item.supply_nm }}</td>
 		                                		<td>{{ item.tel }}</td>
 		                                		<td>{{ item.supply_mng_nm }}</td>
 		                                		<td>{{ item.mng_tel }}</td>
 		                                		<td>{{ item.email }}</td>
 		                                		<td>{{ item.warehouse_nm }}</td>
+		                                		<td></td>
 		                                	</tr>
 		                                </tbody>
 		                            </table>
