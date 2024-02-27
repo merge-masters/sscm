@@ -78,14 +78,6 @@ public class ScmRefundListModel {
 		this.refundAmount = refundAmount;
 	}
 
-	public String getstate() {
-		return state;
-	}
-
-	public void setstate(String state) {
-		this.state = state;
-	}
-
 	public String getState() {
 		return state;
 	}
