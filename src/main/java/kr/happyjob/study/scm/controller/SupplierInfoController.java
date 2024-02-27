@@ -143,11 +143,13 @@ public class SupplierInfoController {
    
     
     System.out.println("supply_cd:::" + paramMap.get("supply_cd"));
-    
     // 제품 목록 조회
     List<SupplierInfoModel> listSupplierProductModel = supplierInfoService.listSupplierProduct(paramMap);
    // model.addAttribute("listSupplierProductModel", listSupplierProductModel);
     System.out.println("size:::" + listSupplierProductModel.size());
+    for (SupplierInfoModel supplierInfoModel : listSupplierProductModel) {
+		System.out.println("======data check : " + supplierInfoModel.getProduct_cd());
+	}
     
     // 제품 목록 카운트 조회
     int totalCount = supplierInfoService.totalCntProduct(paramMap);
