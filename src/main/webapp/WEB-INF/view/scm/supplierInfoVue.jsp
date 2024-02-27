@@ -25,12 +25,17 @@
   var supplierSearch; 
   var editSupplierInfo;
   var fInitFormSupplier;
+  var selectWarehouse;
   
   
   //OnLoad event
   $(document).ready(function() {
 	  
 	  init();
+	  
+
+      //창고명 조회 콤보박스
+      //selectComCombo("wh", "warehouse_nm", "sel", ""); 
   });
     
 function init(){
@@ -54,7 +59,13 @@ function init(){
 		        },
 		        updateSupplies : function(supply_cd){
 		        	editSupplierInfo.updateSupplies(supply_cd);
-		        } 
+		        },
+		        /* selectwarehouse : function(){
+		        	editSupplierInfo.selectwarehouse();
+		        } */
+			    modifySupplier : function(supply_cd){
+			    	fPopModalSupplier(supply_cd);
+			    }
 		        
 			},
 			mounted: function() {
@@ -139,52 +150,86 @@ function init(){
 	  editSupplierInfo = new Vue({
 		  el : "#layer1",
 		  data : {
-			  supply_cd : "",
-			  supply_nm : "",
-			  tel : "",
-			  supply_mng_nm : "",
-			  mng_tel : "",
-			  email : "",
-			  warehouse_nm : "",
-			  warehouse_cd : "",
-			  action : "U"
-		  },
-		  methods : {
-			  updateSupplies : function(supply_cd){
-				  var param = {
-						  supply_cd : supply_cd
-					};
-				  
-				  axios.post('selectSupplierVue.do', param)
-				  	.then(function(response){
-				  		
-				  		// frealPopModal(response.data.SupplierInfoModel);
-				  		
-				  		this.supply_nm = response.data.SupplierInfoModel.supply_nm;
-				  		this.supply_cd = response.data.SupplierInfoModel.supply_cd;
-				  		this.tel = response.data.SupplierInfoModel.tel;
-				  		this.supply_mng_nm = response.data.SupplierInfoModel.supply_mng_nm;
-				  		this.mng_tel = response.data.SupplierInfoModel.mng_tel;
-				  		this.email = response.data.SupplierInfoModel.email;
-				  		this.warehouse_cd = response.data.SupplierInfoModel.warehouse_cd;
-				  		// this.warehouse_nm = response.data.SupplierInfoModel.warehouse_nm;
-				  		
-				  		console.log(this.supply_cd);
-				  		console.log(this.supply_nm);
-				  		console.log(this.tel);
-				  		console.log(this.supply_mng_nm);
-				  		console.log(this.mng_tel);
-				  		console.log(this.email);
-				  		console.log(this.warehouse_cd);
-				  		// console.log(this.warehouse_nm);
-				  		gfModalPop("#layer1");
-				  	})
-				  	.catch(function(error){
-				  		console.log(error);
-				  	})
+			  SupplierInfoModel : {
+				  supply_nm: "",
+			      supply_cd: "",
+			      tel: "",
+			      supply_mng_nm: "",
+			      mng_tel: "",
+			      email: "",
+			      warehouse_cd: "",
+			      warehouse_nm: ""
 			  }
-	  }
+		  },
+		  methods: {
+			  updateSupplies: function (supply_cd) {
+			    var param = {
+			      supply_cd: supply_cd
+			    };
+
+			    axios.post('selectSupplierVue.do', param)
+			      .then(function (response) {
+			        gfModalPop("#layer1");
+			        
+			        fInitFormSupplier(response.data.SupplierInfoModel);
+			        editSupplierInfo.selectwarehouse(response.data.SupplierInfoModel);
+			      })
+			      .catch(function (error) {
+			        console.log(error);
+			      });
+			  },
+			  selectwarehouse : 
+			    /* selectwarehouse : function(data){
+			    	console.log("왓냐");
+			    	var selwh = data.warehouse_cd;
+			        
+			    	console.log(selwh);
+			        //alert("selectwarehouse : " + $("#warehouse_nm").val());
+			        
+			        $("#warehouse_cd").val(selwh);
+			    } */
+			}
+
 	  })
+	  
+
+	  function fInitFormSupplier(data) {
+		    if (data == "" || data == null || data == undefined) {
+		      $("#supply_cd").val("");
+		      $("#supply_nm").val("");
+		      $("#supply_mng_nm").val("");    
+		      $("#tel").val("");
+		      $("#mng_tel").val("");
+		      $("#email").val("");
+		      $("#warehouse_cd").val("");
+		      $("#warehouse_nm").val("");
+		      
+		      $("#supply_cd").attr("readonly", false);
+		      $("#supply_cd").css("background", "#FFFFFF");
+		      $("#warehouse_cd").attr("readonly", true);
+		      $("#warehouse_cd").css("background", "#F5F5F5");
+		      
+		      $("#btnDeleteSupplier").hide();
+		    } else{
+		      $("#supply_cd").val(data.supply_cd);
+		      $("#supply_cd").attr("readonly", true);
+		      $("#supply_cd").css("background", "#F5F5F5");
+		      $("#supply_nm").val(data.supply_nm);
+		      $("#supply_mng_nm").val(data.supply_mng_nm);
+		      $("#tel").val(data.tel);
+		      $("#mng_tel").val(data.mng_tel);
+		      $("#email").val(data.email);
+		      $("#warehouse_cd").val(data.warehouse_cd);
+		      $("#warehouse_nm").val(data.warehouse_nm);
+		      
+		      $("#warehouse_cd").attr("readonly", true);
+		      $("#warehouse_cd").css("background", "#F5F5F5");
+		      
+		      
+		      $("#btnDeleteSupplier").show();
+		    } 
+		  } 
+		  
 
 
 	  
@@ -401,8 +446,8 @@ function init(){
 								<td><input type="text" class="inputTxt p100"
 									name="warehouse_cd" id="warehouse_cd" v-model="warehouse_cd" /></td>
 								<th scope="row">창고명</th>
-								<td><select id="warehouse_nm" name="warehouse_nm" v-model="warehouse_nm" 
-									onChange="javascript:selectwarehouse()"></select></td>
+								<td><select id="warehouse_nm" name="warehouse_nm"
+	                                    onChange="selectwarehouse()"></select></td>
 							</tr>
 						</tbody>
 					</table>
