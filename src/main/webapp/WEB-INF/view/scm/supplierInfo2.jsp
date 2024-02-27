@@ -17,6 +17,7 @@
 	    var pageSizeProduct = 5; //제품정보 페이지 사이즈
 	    var pageBlockSizeProduct = 5; //제품정보 페이지 블록 갯수
 		var listSupplier;
+	    var updateSupplier;
 	    //OnLoad event
 	    $(document).ready(function () {
 	    	
@@ -42,7 +43,11 @@
 				el: "#supplierVue",
 				data: {
 					supplierlist: [],
-					detailsupplier: []
+					detail_supplier: [],
+					product_cd: '',
+					prod_nm: '',
+					l_ct_nm: '',
+					purchase_price:''
 				},
 				methods: {
 					supplierList: function() {
@@ -50,19 +55,23 @@
 						fSelectSupplier();						// 공급처 단건 조회 함수
 						fDeleteSupplier();						// 공급처 삭제 함수
 					},
-					detailSupplier: function(supplyCd) {
-						fListProduct(supplyCd);
-						//callfListProduct();
-						console.log("선택한 공급처: ", tmpsupply_nm, " 코드: ", tmpsupply_cd);
+					detailSupplier: function(supply_cd, supply_nm) {
+						fListProduct(supply_cd, supply_nm);
+						console.log("선택한 공급처: ", supply_nm, " 코드: ", supply_cd);
 					},
 					board_search: function(currentPage) {
 						board_search(currentPage);				// 검색 함수
 					},
 		            fListSupplier: function() {
 		                fListSupplier(); 			                    // 공급처 조회 함수
+		            },
+		            modifySupplier: function(supplyCd) {
+		            	alert(supplyCd);
+		            	fPopModalSupplier(supplyCd);
 		            }
 				}
 	    	});
+
 	    };
 	
 	    /*버튼 이벤트 등록*/
@@ -118,12 +127,15 @@
  	        console.log("data : " + data);
 	        console.log("dataList : " + data.listSupplierModel);
 	        
+	        $("#tmpsupply_nm").val();
+	        $("#tmpsupply_cd").val();
+	        
 	        // 20240223
 	        // listSupplier의 supplierlist를 새로운 data에 담아 listSupplierModel만 불러와서 뿌림
 	        listSupplier.supplierlist = data.listSupplierModel;	        
 	        
 	        //기존 목록 삭제
-// 	        $("#listSupplier").empty();
+	        $("#listSupplier").empty();
 // 	        $("#listSupplier").append(data);
 //	        총 개수 추출
 	        var totalSupplier = $("#totalSupplier").val();
@@ -135,22 +147,21 @@
 	    }
 	
 	    /*제품목록 조회 이전 페이징 설정*/
-	    function callfListProduct(supply_nm, supply_cd) {
-	        $("#tmpsupply_nm").val(supply_nm);
-	        $("#tmpsupply_cd").val(supply_cd);
-	
+	    function callfListProduct() {
+	        $("#tmpsupply_nm").val();
+	        $("#tmpsupply_cd").val();
 	        fListProduct();
 	
 	    }
 	
 	
 	    /*제품 목록 조회*/
-	    function fListProduct(supply_cd, currentPage) {
+	    function fListProduct(supply_cd, supply_nm, currentPage) {
 	        //공급처명 매개변수 설정
 	        currentPage = currentPage || 1;
 	
-	        //var supply_nm = $("#tmpsupply_nm").val();
-	        //var supply_cd = $("#tmpsupply_cd").val();
+	        $("#tmpsupply_nm").val(supply_nm);
+	        $("#tmpsupply_cd").val(supply_cd);
 	
 	        var param = {
 	           supply_cd: supply_cd //공급처 코드 변수설정
@@ -158,7 +169,6 @@
 	            , pageSize: pageSizeProduct
 	        }
 	
-	        console.log("supply_cd : " + supply_cd);
 	        var resultCallback = function (data) {
 	            flistProductResult(data, currentPage);
 	        };
@@ -166,14 +176,15 @@
 	    }
 	    /*제품목록 조회 콜백 함수*/
 	    function flistProductResult(data, currentPage) {
-	        console.log("data : " + data);
-	        data = JSON.parse(data)
-	        listSupplier.detailSupplier = data.listSupplierProductModel;
+	        data = JSON.parse(data);
+	        listSupplier.detail_supplier = data.listSupplierProductModel;
+	        console.log("=====data check : " + JSON.stringify(listSupplier.detail_supplier));
 	        
 	        // 공급 제품정보 + 공급처명
 	        $('#subTitle').text(" - " + $("#tmpsupply_nm").val());
 	        //기존 목록 삭제
-	        $("#listSupplierProduct").empty();
+	        //$("#listSupplierProduct").empty();
+	        
 	        // 신규 목록 생성
 	        $("#listSupplierProduct").append(data);
 	        //$("#listProduct").append($listProduct.children());  
@@ -415,7 +426,7 @@
 	
 	                                <!-- 요부분 vue로 변경 -->
 	                                <a href="javascript:fPopModalSupplier()" class="btnType blue" name="modal"
-	                                    style="float: right; display: none;">
+	                                    style="float: right; display: ;">
 	                                    <span>신규등록</span>
 	                                </a>
 	
@@ -466,15 +477,15 @@
 		                                    </tr>
 		                                </thead>
 		                                <tbody id="listSupplier" v-if="supplierlist.length">
-		                                	<tr v-on:click="detailSupplier(item.supply_cd)"  v-for="(item, index) in supplierlist" :key="index">
+		                                	<tr   v-for="(item, index) in supplierlist" :key="index">
 		                                		<td>{{ item.supply_cd }}</td>
-		                                		<td  style="cursor: pointer;">{{ item.supply_nm }}</td>
+		                                		<td  v-on:click="detailSupplier(item.supply_cd, item.supply_nm)" style="cursor: pointer;">{{ item.supply_nm }}</td>
 		                                		<td>{{ item.tel }}</td>
 		                                		<td>{{ item.supply_mng_nm }}</td>
 		                                		<td>{{ item.mng_tel }}</td>
 		                                		<td>{{ item.email }}</td>
 		                                		<td>{{ item.warehouse_nm }}</td>
-		                                		<td></td>
+		                                		<td><a @click="modifySupplier(item.supply_cd);" class="btnType3 color1"><span>수정</span></a></td>
 		                                	</tr>
 		                                </tbody>
 		                            </table>
@@ -504,9 +515,16 @@
 		                                    </tr>
 		                                </thead>
 		                                <tbody id="listSupplierProduct">
-		                                    <tr>
-		                                        <td colspan="6">공급처를 선택해 주세요.</td>
-		                                    </tr>
+			                                    <tr v-if="detail_supplier.length === 0">
+			                                        <td colspan="4">공급처를 선택해 주세요.</td>
+			                                    </tr>
+			                                   <tr v-for="(item, index) in detail_supplier" >
+			                                    	<td>{{ item.product_cd }}</td>
+			                                    	<td>{{ item.prod_nm }}</td>
+			                                    	<td>{{ item.l_ct_nm }}</td>
+			                                    	<td>{{ item.purchase_price}}</td>
+	                                    		</tr>
+
 		                                </tbody>
 		                            </table>
 		                        </div>
