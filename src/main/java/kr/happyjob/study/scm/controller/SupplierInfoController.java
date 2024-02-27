@@ -32,7 +32,7 @@ public class SupplierInfoController {
   // Get class name for logger
   private final String className = this.getClass().toString();
   
-/*  @RequestMapping("supplierInfo.do")
+  @RequestMapping("supplierInfo.do")
   public String initSupplierInfo(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
       HttpServletResponse response, HttpSession Session) throws Exception{
 	  	return "scm/supplierInfo2";
