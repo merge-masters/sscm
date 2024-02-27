@@ -23,7 +23,7 @@ import kr.happyjob.study.scm.service.SupplierInfoService;
 
 @Controller
 @RequestMapping("/scm")
-public class SupplierInfoController {
+public class SupplierInfoController2 {
   @Autowired //묶어준다
   SupplierInfoService supplierInfoService;
   
@@ -32,50 +32,52 @@ public class SupplierInfoController {
   // Get class name for logger
   private final String className = this.getClass().toString();
   
-/*  @RequestMapping("supplierInfo.do")
+  @RequestMapping("supplierInfo.do")
   public String initSupplierInfo(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
       HttpServletResponse response, HttpSession Session) throws Exception{
  
     return "scm/supplierInfoVue";
-  }*/
+  }
   
-  //공급처 조회
-  @RequestMapping("listSupplier.do")
-  public String listSupplier(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+  //공급처 조회 - 뷰
+  @RequestMapping("listSupplierVue.do")
+  @ResponseBody
+  public Map<String, Object> listSupplierVue(Model model, @RequestBody Map<String, Object> paramMap, HttpServletRequest request,
       HttpServletResponse response, HttpSession session) throws Exception{
     
     int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));  // 현재 페이지 번호
-    int pageSize    = Integer.parseInt((String)paramMap.get("pageSize"));      // 페이지 사이즈
-    int pageIndex   = (currentPage -1)*pageSize;                  // 페이지 시작 row 번호
+    int pageSize    = (int) paramMap.get("pageSize");     // 페이지 사이즈
+    int pageIndex   = (currentPage -1)*pageSize;          // 페이지 시작 row 번호
     
     paramMap.put("pageIndex", pageIndex);
     paramMap.put("pageSize", pageSize);
     
     // 공급처 목록 조회
     List<SupplierInfoModel> listSupplierModel = supplierInfoService.listSupplier(paramMap);
-    model.addAttribute("listSupplierModel", listSupplierModel);
     
     // 공급처 목록 카운트 조회
     int totalCount = supplierInfoService.totalCntSupplier(paramMap);
-    model.addAttribute("totalSupplier", totalCount);
     
-    model.addAttribute("pageSize", pageSize);
-    model.addAttribute("currentPageSupplier",currentPage);  
+    Map<String, Object> resultMap = new HashMap<>();
     
-    return "scm/listSupplier";
+    resultMap.put("listSupplierModel", listSupplierModel);
+    resultMap.put("totalCount", totalCount);
+    resultMap.put("pageSize", pageSize);
+    resultMap.put("currentPageSupplier",currentPage);
+    
+    return resultMap;
   }
   
-
-  //제품목록 조회
-  @RequestMapping("listSupplierProduct.do")
-  public String listSupplierProduct(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+  //제품목록 조회 - 뷰
+  @RequestMapping("listSupplierProductVue.do")
+  @ResponseBody
+  public Map<String, Object> listSupplierProductVue(Model model, @RequestBody Map<String, Object> paramMap, HttpServletRequest request,
       HttpServletResponse response, HttpSession session) throws Exception{
-    
+	  logger.info("+ Start " + className );
+		logger.info("   - paramMap : " + paramMap);
     int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));  // 현재 페이지 번호
-    int pageSize = Integer.parseInt((String)paramMap.get("pageSize"));      // 페이지 사이즈
+    int pageSize    = (int) paramMap.get("pageSize");      // 페이지 사이즈
     int pageIndex = (currentPage-1)*pageSize;                 // 페이지 시작 row 번호
-    
-//    System.out.println("paramMap : " + paramMap);
     
     paramMap.put("pageIndex", pageIndex);
     paramMap.put("pageSize", pageSize);
@@ -83,24 +85,50 @@ public class SupplierInfoController {
     
     // 제품 목록 조회
     List<SupplierInfoModel> listSupplierProductModel = supplierInfoService.listSupplierProduct(paramMap);
-    model.addAttribute("listSupplierProductModel", listSupplierProductModel);
     
     // 제품 목록 카운트 조회
     int totalCount = supplierInfoService.totalCntProduct(paramMap);
-    model.addAttribute("totalProduct", totalCount);
     
-    model.addAttribute("pageSize", pageSize);
-    model.addAttribute("currentPageProduct",currentPage);
+    Map<String, Object> resultMap = new HashMap<>();
     
+    resultMap.put("listSupplierProductModel", listSupplierProductModel);
+    resultMap.put("totalProduct", totalCount);
+    resultMap.put("pageSize", pageSize);
+    resultMap.put("currentPageProduct",currentPage);
     
-    return "scm/listSupplierProduct";
+    return resultMap;
   }
   
-//공급처 저장
- @RequestMapping("saveSupplier.do")
+  //공급처 단건 조회 - 뷰
+  @RequestMapping("selectSupplierVue.do")
+  @ResponseBody
+  public Map<String, Object> selectSupplierVue (Model model, @RequestBody Map<String, Object> paramMap, HttpServletRequest request,
+      HttpServletResponse response, HttpSession session) throws Exception{
+
+	    logger.info("   - paramMap : " + paramMap);
+	    
+	String result = "SUCCESS";
+    String resultMsg = "조회 되었습니다.";
+    
+    SupplierInfoModel SupplierInfoModel = supplierInfoService.selectSupplier(paramMap);
+    
+    Map<String, Object> resultMap = new HashMap<String, Object>();
+    resultMap.put("result", result);
+    resultMap.put("resultMsg", resultMsg);
+    resultMap.put("SupplierInfoModel", SupplierInfoModel);
+    
+    System.out.println(resultMap);
+    return resultMap;
+  }
+  
+  
+//공급처 저장 - 뷰
+ @RequestMapping("saveSupplierVue.do")
  @ResponseBody
- public Map<String, Object> saveSupplier (Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+ public Map<String, Object> saveSupplierVue (Model model, @RequestBody Map<String, Object> paramMap, HttpServletRequest request,
      HttpServletResponse response, HttpSession session) throws Exception{
+
+	    logger.info("   - paramMap : " + paramMap);
 	    
    String action = (String)paramMap.get("action");
    
@@ -140,29 +168,5 @@ public class SupplierInfoController {
    
    return resultMap;
  }
-  
-  //공급처 단건 조회
-  @RequestMapping("selectSupplier.do")
-  @ResponseBody
-  public Map<String, Object> selectSupplier (Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
-      HttpServletResponse response, HttpSession session) throws Exception{
-
-	    logger.info("   - paramMap : " + paramMap);
-	    
-	String result = "SUCCESS";
-    String resultMsg = "조회 되었습니다.";
-    
-    SupplierInfoModel SupplierInfoModel = supplierInfoService.selectSupplier(paramMap);
-    
-    Map<String, Object> resultMap = new HashMap<String, Object>();
-    resultMap.put("result", result);
-    resultMap.put("resultMsg", resultMsg);
-    resultMap.put("SupplierInfoModel", SupplierInfoModel);
-    
-    System.out.println(resultMap);
-    return resultMap;
-  }
-  
-
-  
 }
+ 
