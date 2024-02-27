@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,8 +27,12 @@ public class SupplierInfoController {
   @Autowired //묶어준다
   SupplierInfoService supplierInfoService;
   
+  private final Logger logger = LogManager.getLogger(this.getClass());
+
+  // Get class name for logger
+  private final String className = this.getClass().toString();
   
-  @RequestMapping("supplierInfo.do")
+/*  @RequestMapping("supplierInfo.do")
   public String initSupplierInfo(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
       HttpServletResponse response, HttpSession Session) throws Exception{
 	  	return "scm/supplierInfo2";
@@ -94,38 +100,7 @@ public class SupplierInfoController {
     return resultMap;
   }
   
-  //공급처 조회 - 뷰
-  @RequestMapping("listSupplierVue.do")
-  @ResponseBody
-  public Map<String, Object> listSupplierVue(Model model, @RequestBody Map<String, Object> paramMap, HttpServletRequest request,
-      HttpServletResponse response, HttpSession session) throws Exception{
-    
-/*	logger.info("+ Start " + className );
-	logger.info("   - paramMap : " + paramMap);*/
-		
-    int currentPage = Integer.parseInt((String)paramMap.get("currentPage"));  // 현재 페이지 번호
-    int pageSize    = (int) paramMap.get("pageSize");     // 페이지 사이즈
-    int pageIndex   = (currentPage -1)*pageSize;          // 페이지 시작 row 번호
-    
-    paramMap.put("pageIndex", pageIndex);
-    paramMap.put("pageSize", pageSize);
-    
-    // 공급처 목록 조회
-    List<SupplierInfoModel> listSupplierModel = supplierInfoService.listSupplier(paramMap);
-    
-    // 공급처 목록 카운트 조회
-    int totalCount = supplierInfoService.totalCntSupplier(paramMap);
-    
-    Map<String, Object> resultMap = new HashMap<>();
-    
-    resultMap.put("listSupplierModel", listSupplierModel);
-    resultMap.put("totalCount", totalCount);
-    resultMap.put("pageSize", pageSize);
-    resultMap.put("currentPageSupplier",currentPage);
-    
-    return resultMap;
-  }
-  
+
   //제품목록 조회
   @RequestMapping("listSupplierProduct.do")
   @ResponseBody
@@ -174,7 +149,7 @@ public class SupplierInfoController {
  @ResponseBody
  public Map<String, Object> saveSupplier (Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
      HttpServletResponse response, HttpSession session) throws Exception{
-   
+	    
    String action = (String)paramMap.get("action");
    
    String result = "SUCCESS";
@@ -220,15 +195,17 @@ public class SupplierInfoController {
   public Map<String, Object> selectSupplier (Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
       HttpServletResponse response, HttpSession session) throws Exception{
 
-    String result = "SUCCESS";
+	    logger.info("   - paramMap : " + paramMap);
+	    
+	String result = "SUCCESS";
     String resultMsg = "조회 되었습니다.";
     
-    SupplierInfoModel supplierInfoModel = supplierInfoService.selectSupplier(paramMap);
+    SupplierInfoModel SupplierInfoModel = supplierInfoService.selectSupplier(paramMap);
     
     Map<String, Object> resultMap = new HashMap<String, Object>();
     resultMap.put("result", result);
     resultMap.put("resultMsg", resultMsg);
-    resultMap.put("supplierInfoModel", supplierInfoModel);
+    resultMap.put("SupplierInfoModel", SupplierInfoModel);
     
     System.out.println(resultMap);
     return resultMap;
