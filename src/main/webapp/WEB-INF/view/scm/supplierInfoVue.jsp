@@ -178,8 +178,7 @@ function init(){
 			        console.log(error);
 			      });
 			  },
-			  selectwarehouse : 
-			    /* selectwarehouse : function(data){
+			     selectwarehouse : function(data){
 			    	console.log("왓냐");
 			    	var selwh = data.warehouse_cd;
 			        
@@ -187,8 +186,9 @@ function init(){
 			        //alert("selectwarehouse : " + $("#warehouse_nm").val());
 			        
 			        $("#warehouse_cd").val(selwh);
-			    } */
-			}
+			    } 
+		  
+	  }
 
 	  })
 	  
@@ -446,8 +446,7 @@ function init(){
 								<td><input type="text" class="inputTxt p100"
 									name="warehouse_cd" id="warehouse_cd" v-model="warehouse_cd" /></td>
 								<th scope="row">창고명</th>
-								<td><select id="warehouse_nm" name="warehouse_nm"
-	                                    onChange="selectwarehouse()"></select></td>
+								<td><select id="warehouse_nm" name="warehouse_nm"></select></td>
 							</tr>
 						</tbody>
 					</table>
