@@ -17,7 +17,7 @@
 	    var pageSizeProduct = 5; //제품정보 페이지 사이즈
 	    var pageBlockSizeProduct = 5; //제품정보 페이지 블록 갯수
 		var listSupplier;
-	    var updateSupplier;
+	    var addVue;
 	    //OnLoad event
 	    $(document).ready(function () {
 	    	
@@ -66,11 +66,18 @@
 		                fListSupplier(); 			                    // 공급처 조회 함수
 		            },
 		            modifySupplier: function(supplyCd) {
-		            	alert(supplyCd);
 		            	fPopModalSupplier(supplyCd);
 		            }
 				}
 	    	});
+	    	addVue = new Vue({
+	    		el: "#addVue",
+	    		methods: {
+	    			createSupplier: function() {
+	    				fPopModalSupplier();
+	    			}
+	    		}
+	    	})
 
 	    };
 	
@@ -133,9 +140,9 @@
 	        // 20240223
 	        // listSupplier의 supplierlist를 새로운 data에 담아 listSupplierModel만 불러와서 뿌림
 	        listSupplier.supplierlist = data.listSupplierModel;	        
-	        
+	        $("#totalSupplier").val(data.totalSupplier);
 	        //기존 목록 삭제
-	        $("#listSupplier").empty();
+//	        $("#listSupplier").empty();
 // 	        $("#listSupplier").append(data);
 //	        총 개수 추출
 	        var totalSupplier = $("#totalSupplier").val();
@@ -412,24 +419,27 @@
 	                    <!-- contents -->
 	                    <h3 class="hidden">contents 영역</h3> <!-- content -->
 	                    <div class="content">
-	
-	                        <p class="Location">
-	                            <a href="/system/notice.do" class="btn_set home">메인으로</a>
-	                            <a class="btn_nav">기준 정보</a>
-	                            <span class="btn_nav bold">공급처 관리</span>
-	                            <a href="" class="btn_set refresh">새로고침</a>
-	                        </p>
-	
-	                        <p class="conTitle">
-	                            <span>공급처 정보</span>
-	                            <span class="fr">
-	
-	                                <!-- 요부분 vue로 변경 -->
-	                                <a href="javascript:fPopModalSupplier()" class="btnType blue" name="modal"
-	                                    style="float: right; display: ;">
-	                                    <span>신규등록</span>
-	                                </a>
-	
+							
+							
+							<div id="addVue">
+		                        <p class="Location">
+		                            <a href="/system/notice.do" class="btn_set home">메인으로</a>
+		                            <a class="btn_nav">기준 정보</a>
+		                            <span class="btn_nav bold">공급처 관리</span>
+		                            <a href="" class="btn_set refresh">새로고침</a>
+		                        </p>
+		
+		                        <p class="conTitle">
+		                            <span>공급처 정보</span>
+		                            <span class="fr">
+		                            
+									
+		                                <!-- 요부분 vue로 변경 -->
+		                                <!-- <a href="javascript:fPopModalSupplier()" class="btnType blue" name="modal" style="float: right; display: ;"> -->
+		                                <a @click="createSupplier" class="btnType blue" name="modal" style="float: right; cursor: pointer;">
+		                                    <span>신규등록</span>
+		                                </a>
+								</div>
 	
 	
 	                            </span>
@@ -439,15 +449,13 @@
 							
 		                        <div class="SupplierList">
 		                            <div class="conTitle" style="margin: 0 25px 10px 0; float: left;">
-		                                <select id="searchKey" name="searchKey" style="width: 100px;"
-		                                    v-model="searchKey">
+		                                <select id="searchKey" name="searchKey" style="width: 100px;" v-model="searchKey">
 		                                    <option value="all" selected="selected">전체</option>
 		                                    <option value="supply_nm">공급처명</option>
 		                                    <option value="supply_mng_nm">담당자명</option>
 		                                </select>
-		                                <input type="text" style="width: 300px; height: 30px;" id="sname"
-		                                    name="sname">
-		                                <a href="" class="btnType blue" id="searchBtn" name="btn" @click="board_search">
+		                                <input type="text" style="width: 300px; height: 30px;" id="sname" name="sname">
+		                                <a @click="board_search" class="btnType blue" id="searchBtn" name="btn" >
 		                                    <span>검 색</span>
 		                                </a>
 		                            </div>
@@ -479,7 +487,7 @@
 		                                <tbody id="listSupplier" v-if="supplierlist.length">
 		                                	<tr   v-for="(item, index) in supplierlist" :key="index">
 		                                		<td>{{ item.supply_cd }}</td>
-		                                		<td  v-on:click="detailSupplier(item.supply_cd, item.supply_nm)" style="cursor: pointer;">{{ item.supply_nm }}</td>
+		                                		<td  v-on:click="detailSupplier(item.supply_cd, item.supply_nm)" style="color:black; cursor: pointer;">{{ item.supply_nm }}</td>
 		                                		<td>{{ item.tel }}</td>
 		                                		<td>{{ item.supply_mng_nm }}</td>
 		                                		<td>{{ item.mng_tel }}</td>
