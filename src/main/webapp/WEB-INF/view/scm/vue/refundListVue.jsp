@@ -244,8 +244,8 @@
  		
  		cancleButton.addEventListener('click',  function() {
 //  			detail_refundReset();
+			detail_title.innerHTML = '';
  	 		result.innerHTML = '';
- 	 		detailRefund.innerHTML = '';
  		})
  		
  		detail_title.appendChild(titleContent);
