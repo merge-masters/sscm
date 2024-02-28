@@ -66,6 +66,7 @@
 		                fListSupplier(); 			                    // 공급처 조회 함수
 		            },
 		            modifySupplier: function(supplyCd) {
+		            	alert(supplyCd);
 		            	fPopModalSupplier(supplyCd);
 		            }
 				}

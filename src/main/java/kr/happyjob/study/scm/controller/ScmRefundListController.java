@@ -1,7 +1,6 @@
 package kr.happyjob.study.scm.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +13,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -47,94 +45,9 @@ public class ScmRefundListController {
 
 		logger.info("+ end " + className + ".init");
 
-		return "/scm/vue/refundListVue";
+		return "/scm/refundList";
 	}
-	
-	@RequestMapping("/refundListinfoVue.do")
-	@ResponseBody
-	public Map<String, Object> getRefundListVue(Model model, @RequestBody Map<String, Object> paramMap, HttpServletRequest request,
-			HttpServletResponse response, HttpSession session)  throws Exception {
-		logger.info("+ Start " + className + ".getRefundList");
-		logger.info("   - paramMap : " + paramMap);
-		
-		logger.info("=====> RequestParam : " + paramMap);
 
-//		int currentPage = (int) paramMap.get("currentPage"); // 현재페이지
-//		int pageSize = (int) paramMap.get("pageSize");
-//		int pageIndex = (currentPage - 1) * pageSize;
-		
-		int currentPage = Integer.parseInt((String) paramMap.get("currentPage")); // 현재페이지
-		int pageSize = Integer.parseInt((String) paramMap.get("pageSize"));
-		int pageIndex = (currentPage - 1) * pageSize;
-
-		paramMap.put("pageIndex", pageIndex);
-		paramMap.put("pageSize", pageSize);
-		logger.info("After putting pageIndex, pageSize, paramMap:" + paramMap);
-		
-		logger.info("startDate: " + paramMap.get("startDate"));
-		logger.info("searchType: " + paramMap.get("searchType"));
-		logger.info("keyword: " + paramMap.get("keyword"));
-		
-		// paramMap에 check_[number] 가 있으면 ArrayList에 담기
-		ArrayList<Integer> checkedStateList = new ArrayList<Integer>(); 
-		paramMap.forEach((key, value) -> {
-			System.out.println(String.format("key -> %s, value -> %s", key, value));
-			if (key.substring(0, 5).equals("check")) {
-				checkedStateList.add(Integer.parseInt((String) value));
-			}
-		});
-		logger.info("checkedStateList: "+checkedStateList);
-		// checkList paramMap에 담기
-		paramMap.put("checkedStateList", checkedStateList);
-		
-		// tb_order 테이블에서 STTcd가 (3-반품대기,4-승인대기(반품),5-승인완료(반품), 6-반품진행중,
-		// 7-반품완료)인 주문만 보이도록
-		List<ScmRefundListModel> refundList = scmRefundListService.getRefundList(paramMap);
-		
-		int refundListCnt = scmRefundListService.getRefundListCnt(paramMap);
-		
-		Map<String, Object> resultMap = new HashMap<>();
-		
-		resultMap.put("refundList", refundList);
-		
-		resultMap.put("refundListCnt", refundListCnt);
-		
-		resultMap.put("pageSize", pageSize);
-		resultMap.put("currentPage", currentPage);
-	
-		logger.info("+ end " + className + ".getRefundListVue");
-		
-		return resultMap;
-	}
-	
-	@RequestMapping("refundDetailInfoVue.do")
-	@ResponseBody
-	public Map<String, Object> getRefundDetailVue(Model model, @RequestBody Map<String, Object> paramMap, HttpServletRequest request,
-			HttpServletResponse response, HttpSession session) throws Exception {
-
-		logger.info("+ Start " + className + ".getRefundDetail");
-		logger.info("   - paramMap : " + paramMap);
-		
-		paramMap.put("loginId", session.getAttribute("loginId"));	// SCM 관리자 아이디
-
-		ScmRefundListModel refundDetail = scmRefundListService.getRefundDetail(paramMap);
-		String scmManager = scmRefundListService.getScmManagerName(paramMap);
-		refundDetail.setScmManager(scmManager);
-		
-		Map<String, Object> resultMap = new HashMap<>();
-		
-		resultMap.put("refundDetail", refundDetail);
-
-		logger.info("=====> resultMap : " + resultMap);
-		logger.info("+ end " + className + ".getRefundDetail");
-
-		return resultMap;
-	}
-	
-// 위는 vue에 관한 Controller
-//==========================================================================
-// 아래는 일반 JSP Controller
-	
 	@RequestMapping("refundListInfo.do")
 	public String getRefundList(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
 			HttpServletResponse response, HttpSession session) throws Exception {
@@ -181,8 +94,6 @@ public class ScmRefundListController {
 
 		return "/scm/refundListInfo";
 	}
-
-
 	
 	@RequestMapping("refundDetailInfo.do")
 	public String getRefundDetail(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
