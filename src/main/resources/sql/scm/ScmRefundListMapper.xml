@@ -50,6 +50,7 @@
 		<select id="selectRefundListCnt" resultType="int">
 			SELECT COUNT(*) tot_cnt
 			FROM tb_order o
+			LEFT JOIN tb_userinfo ui ON ui.loginID = o.loginID
 			WHERE STTcd IN (3, 4, 5, 6, 7)
 			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
 				AND DATE_FORMAT(o.refund_date, '%Y-%m-%d') BETWEEN #{startDate} AND #{endDate}
