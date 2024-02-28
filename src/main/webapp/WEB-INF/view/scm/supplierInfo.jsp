@@ -290,14 +290,13 @@
   function board_search(currentPage) {
     $('#listSupplierProduct').empty();
     currentPage = currentPage || 1;
-		var sname = $('#sname');
-		var searchKey = document.getElementById("searchKey");
-		var oname = searchKey.options[searchKey.selectedIndex].value;
-
-
+    var sname = $('#sname');
+    var searchKey = document.getElementById("searchKey");
+    var oname = searchKey.options[searchKey.selectedIndex].value;
+    
     var param = {
       sname : sname.val(),
-      oname : searchKey,
+      oname : oname,
       currentPage : currentPage,
       pageSize : pageSizeSupplier
     }
@@ -306,7 +305,8 @@
     var resultCallback = function(data) {
       flistSupplierResult(data, currentPage);
     };
-    callAjax("/scm/listSupplier.do", "post", "text", true, param, resultCallback);
+    callAjax("/scm/listSupplier.do", "post", "text", true, param,
+        resultCallback);
   }
   
   //창고명 검색 콤보박스
